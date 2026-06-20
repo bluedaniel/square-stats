@@ -1,0 +1,117 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { StatsCards } from "@/components/StatsCards";
+import { DispersionChart } from "@/components/DispersionChart";
+import { DistanceHistogram } from "@/components/DistanceHistogram";
+import { TrendChart } from "@/components/TrendChart";
+import { SpinChart } from "@/components/SpinChart";
+import { StatsTable } from "@/components/StatsTable";
+import { recomputeClubStats } from "@/utils/analyze";
+import type { SessionAnalysis } from "@/types/shot";
+
+interface Props {
+  analysis: SessionAnalysis;
+  filename: string;
+  onReset: () => void;
+}
+
+export function Dashboard({ analysis, filename, onReset }: Props) {
+  const clubs = ["All", ...new Set(analysis.shots.map((s) => s.club))];
+  const [selectedClub, setSelectedClub] = useState("All");
+  const [hideOutliers, setHideOutliers] = useState(false);
+
+  // Shots visible after outlier filter (preserves original array indices for poorContactShots)
+  const visibleShots = useMemo(
+    () =>
+      hideOutliers
+        ? analysis.shots.filter((_, i) => !analysis.outlierIndices.has(i))
+        : analysis.shots,
+    [hideOutliers, analysis]
+  );
+
+  // Then apply club filter
+  const filteredShots = useMemo(
+    () =>
+      selectedClub === "All"
+        ? visibleShots
+        : visibleShots.filter((s) => s.club === selectedClub),
+    [selectedClub, visibleShots]
+  );
+
+  // Recompute per-club stats from currently visible shots
+  const visibleClubStats = useMemo(
+    () => recomputeClubStats(visibleShots),
+    [visibleShots]
+  );
+
+  const outlierCount = analysis.outlierIndices.size;
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b px-6 py-4 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold">Square Stats</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {analysis.meta.date && `${analysis.meta.date}`}
+            {analysis.meta.place && ` · ${analysis.meta.place}`}
+            {" · "}
+            <span className="italic">{filename}</span>
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          {clubs.map((club) => (
+            <Badge
+              key={club}
+              variant={club === selectedClub ? "default" : "outline"}
+              className="cursor-pointer select-none"
+              onClick={() => setSelectedClub(club)}
+            >
+              {club}
+            </Badge>
+          ))}
+          <div className="w-px h-5 bg-border mx-1" />
+          <Badge
+            variant={hideOutliers ? "default" : "outline"}
+            className="cursor-pointer select-none"
+            onClick={() => setHideOutliers((v) => !v)}
+          >
+            {hideOutliers
+              ? `Outliers hidden (${outlierCount})`
+              : `Hide outliers (${outlierCount})`}
+          </Badge>
+          <Link
+            href="/shots"
+            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
+          >
+            All shots
+          </Link>
+          <button
+            onClick={onReset}
+            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
+          >
+            Load another
+          </button>
+        </div>
+      </header>
+
+      <main className="p-6 space-y-6">
+        <StatsCards shots={filteredShots} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DispersionChart shots={filteredShots} poorContactShots={analysis.poorContactShots} />
+          <DistanceHistogram shots={filteredShots} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TrendChart shots={filteredShots} />
+          <SpinChart shots={filteredShots} />
+        </div>
+
+        <StatsTable clubStats={visibleClubStats} />
+      </main>
+    </div>
+  );
+}
