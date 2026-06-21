@@ -196,27 +196,27 @@ export function LoftDiagram({
 
       {/* Label names */}
       <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#f97316">
-        <tspan x="130" y="95">
+        <tspan x="130" y="90">
           Angle of
         </tspan>
-        <tspan x="130" y="125">
+        <tspan x="130" y="116">
           Attack
         </tspan>
       </text>
       <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#eab308">
-        <tspan x="0" y="95">
+        <tspan x="0" y="90">
           Dynamic
         </tspan>
-        <tspan x="0" y="125">
+        <tspan x="0" y="116">
           Loft
         </tspan>
       </text>
       <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#22c55e">
-        <tspan x="-130" y="95">
-          Vertical
-        </tspan>
-        <tspan x="-130" y="125">
+        <tspan x="-130" y="90">
           Launch
+        </tspan>
+        <tspan x="-130" y="116">
+          Angle
         </tspan>
       </text>
 

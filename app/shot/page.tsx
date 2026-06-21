@@ -198,7 +198,7 @@ export default function ShotPage() {
           <div className="flex flex-col gap-4">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
                   Face to Path
                 </CardTitle>
               </CardHeader>
@@ -214,7 +214,7 @@ export default function ShotPage() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
                   Dynamic Loft
                 </CardTitle>
               </CardHeader>
@@ -230,7 +230,7 @@ export default function ShotPage() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
                   Impact Location
                 </CardTitle>
               </CardHeader>
