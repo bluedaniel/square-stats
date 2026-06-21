@@ -14,7 +14,6 @@ function fmtDir(n: number): string {
   return `${n > 0 ? "R" : "L"}${Math.abs(n).toFixed(1)}`;
 }
 
-
 function fmt(n: number, d = 1, unit = ""): string {
   const val = n === 0 ? "0" : n.toFixed(d);
   return unit ? `${val} ${unit}` : val;
@@ -28,13 +27,15 @@ interface StatRowProps {
 
 function Stat({ label, value, sub }: StatRowProps) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-xs text-muted-foreground uppercase tracking-wide">
+    <Card className="aspect-square flex flex-col items-center justify-center text-center p-3 gap-1">
+      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-tight">
         {label}
       </span>
-      <span className="text-xl font-semibold tabular-nums">{value}</span>
-      {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
-    </div>
+      <span className="text-lg font-semibold tabular-nums leading-tight">
+        {value}
+      </span>
+      {sub && <span className="text-[10px] text-muted-foreground">{sub}</span>}
+    </Card>
   );
 }
 
@@ -46,26 +47,18 @@ interface GroupProps {
 
 function StatGroup({ title, stats, cols = 3 }: GroupProps) {
   const gridClass =
-    cols === 2
-      ? "grid-cols-2"
-      : cols === 4
-        ? "grid-cols-2 sm:grid-cols-4"
-        : "grid-cols-2 sm:grid-cols-3";
+    cols === 2 ? "grid-cols-2" : cols === 4 ? "grid-cols-4" : "grid-cols-3";
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className={`grid ${gridClass} gap-x-6 gap-y-5`}>
-          {stats.map((s) => (
-            <Stat key={s.label} {...s} />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 px-0.5">
+        {title}
+      </p>
+      <div className={`grid ${gridClass} gap-2`}>
+        {stats.map((s) => (
+          <Stat key={s.label} {...s} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -83,7 +76,7 @@ function buildGroups(shot: Shot) {
     },
     {
       title: "Speed & Contact",
-      cols: 3 as const,
+      cols: 4 as const,
       stats: [
         { label: "Ball Speed", value: fmt(shot.ballSpeed, 1, "mph") },
         {
@@ -98,7 +91,7 @@ function buildGroups(shot: Shot) {
     },
     {
       title: "Launch",
-      cols: 3 as const,
+      cols: 4 as const,
       stats: [
         { label: "Launch Angle", value: fmt(shot.launchAngle, 1, "°") },
         {
@@ -230,7 +223,12 @@ export default function ShotPage() {
           {/* Centre: stat groups */}
           <div className="flex flex-col gap-4 flex-1 min-w-0">
             {groups.map((g) => (
-              <StatGroup key={g.title} title={g.title} stats={g.stats} cols={g.cols} />
+              <StatGroup
+                key={g.title}
+                title={g.title}
+                stats={g.stats}
+                cols={g.cols}
+              />
             ))}
           </div>
 
