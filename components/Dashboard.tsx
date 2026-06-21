@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { StatsCards } from "@/components/StatsCards";
@@ -21,7 +21,13 @@ interface Props {
 export function Dashboard({ analysis, filename, onReset }: Props) {
   const clubs = ["All", ...new Set(analysis.shots.map((s) => s.club))];
   const [selectedClub, setSelectedClub] = useState("All");
-  const [hideOutliers, setHideOutliers] = useState(false);
+  const [hideOutliers, setHideOutliers] = useState(() =>
+    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
+  );
+
+  useEffect(() => {
+    localStorage.setItem("hideOutliers", String(hideOutliers));
+  }, [hideOutliers]);
 
   // Shots visible after outlier filter (preserves original array indices for poorContactShots)
   const visibleShots = useMemo(

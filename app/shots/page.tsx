@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -70,7 +70,13 @@ export default function ShotsPage() {
   const [sortKey, setSortKey] = useState<ShotKey>("club");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [selectedClub, setSelectedClub] = useState("All");
-  const [hideOutliers, setHideOutliers] = useState(false);
+  const [hideOutliers, setHideOutliers] = useState(() =>
+    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
+  );
+
+  useEffect(() => {
+    localStorage.setItem("hideOutliers", String(hideOutliers));
+  }, [hideOutliers]);
 
   const clubs = analysis
     ? ["All", ...new Set(analysis.shots.map(s => s.club))]

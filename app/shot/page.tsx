@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ImpactChart } from "@/components/ImpactChart";
 import { LoftDiagram } from "@/components/LoftDiagram";
 import { FaceToPath } from "@/components/FaceToPath";
+import { LandingChart } from "@/components/LandingChart";
 import { useSession } from "@/contexts/SessionContext";
 import type { Shot } from "@/types/shot";
 
@@ -27,7 +28,7 @@ interface StatRowProps {
 
 function Stat({ label, value, sub }: StatRowProps) {
   return (
-    <Card className="aspect-square flex flex-col items-center justify-center text-center p-3 gap-1">
+    <Card className="aspect-square flex flex-col items-center justify-center text-center p-3 gap-1 max-w-32">
       <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-tight">
         {label}
       </span>
@@ -47,13 +48,15 @@ interface GroupProps {
 
 function StatGroup({ title, stats, cols = 3 }: GroupProps) {
   const gridClass =
-    cols === 2 ? "grid-cols-2" : cols === 4 ? "grid-cols-4" : "grid-cols-3";
+    cols === 2 ? "grid-cols-2" :
+    cols === 4 ? "grid-cols-2 sm:grid-cols-4" :
+                 "grid-cols-2 sm:grid-cols-3";
   return (
     <div>
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 px-0.5">
         {title}
       </p>
-      <div className={`grid ${gridClass} gap-2`}>
+      <div className={`grid ${gridClass} gap-2 lg:gap-3`}>
         {stats.map((s) => (
           <Stat key={s.label} {...s} />
         ))}
@@ -148,6 +151,13 @@ export default function ShotPage() {
   const isOutlier = analysis.outlierIndices.has(arrayIdx);
   const isPoorContact = analysis.poorContactShots.has(shot.index);
   const groups = buildGroups(shot);
+  const hideOutliers =
+    typeof window !== "undefined" &&
+    localStorage.getItem("hideOutliers") === "true";
+  const clubShots = analysis.shots.filter(
+    (s, i) =>
+      s.club === shot.club && !(hideOutliers && analysis.outlierIndices.has(i)),
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -184,9 +194,8 @@ export default function ShotPage() {
       </header>
 
       <main className="p-6">
-        <div className="flex gap-4 max-w-6xl items-start">
-          {/* Left: SVG diagrams */}
-          <div className="flex flex-col gap-4 w-80 shrink-0">
+        <div className="grid gap-4 lg:gap-6 xl:gap-8 items-start grid-cols-1 lg:grid-cols-[260px_minmax(0,480px)] xl:grid-cols-[260px_minmax(0,480px)_220px] mx-auto w-fit">
+          <div className="flex flex-col gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -218,22 +227,7 @@ export default function ShotPage() {
                 />
               </CardContent>
             </Card>
-          </div>
 
-          {/* Centre: stat groups */}
-          <div className="flex flex-col gap-4 flex-1 min-w-0">
-            {groups.map((g) => (
-              <StatGroup
-                key={g.title}
-                title={g.title}
-                stats={g.stats}
-                cols={g.cols}
-              />
-            ))}
-          </div>
-
-          {/* Right: impact location */}
-          <div className="w-64 shrink-0">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -248,6 +242,21 @@ export default function ShotPage() {
                 />
               </CardContent>
             </Card>
+          </div>
+
+          <div className="flex flex-col gap-4 lg:gap-6">
+            {groups.map((g) => (
+              <StatGroup
+                key={g.title}
+                title={g.title}
+                stats={g.stats}
+                cols={g.cols}
+              />
+            ))}
+          </div>
+
+          <div>
+            <LandingChart shots={clubShots} currentShot={shot} />
           </div>
         </div>
       </main>
