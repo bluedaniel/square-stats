@@ -157,7 +157,7 @@ export function FaceToPath({
       />
 
       {/* Label names */}
-      <text textAnchor="middle" fontSize={24} fill="#22c55e">
+      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#22c55e">
         <tspan x="-130" y="135">
           Horizontal
         </tspan>
@@ -165,7 +165,7 @@ export function FaceToPath({
           Launch
         </tspan>
       </text>
-      <text textAnchor="middle" fontSize={24} fill="#eab308">
+      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#eab308">
         <tspan x="0" y="135">
           Face to
         </tspan>
@@ -173,7 +173,7 @@ export function FaceToPath({
           Club Path
         </tspan>
       </text>
-      <text textAnchor="middle" fontSize={24} fill="#f97316">
+      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#f97316">
         <tspan x="130" y="165">
           Club Path
         </tspan>
