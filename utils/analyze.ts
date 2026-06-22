@@ -124,13 +124,17 @@ export function buildCarryHistogram(
   return bins;
 }
 
-export function buildRollingAvg(shots: Shot[], window = 5): { index: number; carry: number; rolling: number }[] {
+export function buildRollingAvg(
+  shots: Shot[],
+  getValue: (s: Shot) => number,
+  window = 5,
+): { index: number; value: number; rolling: number }[] {
   return shots.map((s, i) => {
     const slice = shots.slice(Math.max(0, i - window + 1), i + 1);
     return {
       index: s.index,
-      carry: s.carry,
-      rolling: mean(slice.map((x) => x.carry)),
+      value: getValue(s),
+      rolling: mean(slice.map(getValue)),
     };
   });
 }

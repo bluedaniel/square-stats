@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -97,6 +97,32 @@ function StatGroup({ title, stats, cols = 3, highlightMode }: GroupProps) {
   );
 }
 
+function buildCopyText(
+  shot: Shot,
+  groups: ReturnType<typeof buildGroups>,
+  meta: { date: string; place: string },
+  flags: string[],
+): string {
+  const lines: string[] = [
+    `Golf shot data — ${shot.club}, Shot #${shot.index}`,
+    `Session: ${meta.date}${meta.place ? ` · ${meta.place}` : ""}`,
+    ...(flags.length ? [`Flags: ${flags.join(", ")}`] : []),
+    "",
+  ];
+  for (const group of groups) {
+    lines.push(group.title);
+    for (const stat of group.stats) {
+      const ideal = stat.ideal ? ` (ideal: ${
+        stat.ideal.min != null && stat.ideal.max != null ? `${stat.ideal.min}–${stat.ideal.max}` :
+        stat.ideal.min != null ? `≥${stat.ideal.min}` : `≤${stat.ideal.max}`
+      })` : "";
+      lines.push(`  ${stat.label}: ${stat.value}${ideal}`);
+    }
+    lines.push("");
+  }
+  return lines.join("\n").trim();
+}
+
 function buildGroups(shot: Shot, bagClub: BagClub | undefined) {
   const s = (key: Parameters<typeof profileStatStatus>[1], val: number | undefined | null) =>
     profileStatStatus(bagClub, key, val);
@@ -155,19 +181,33 @@ function buildGroups(shot: Shot, bagClub: BagClub | undefined) {
 }
 
 export default function ShotPage() {
-  const { selectedShot, analysis } = useSession();
+  const { selectedShot, setSelectedShot, analysis } = useSession();
   const router = useRouter();
   const [highlightMode, setHighlightMode] = useState<HighlightMode>(() =>
     ((typeof window !== "undefined" && localStorage.getItem("highlightMode")) as HighlightMode) ?? "off"
   );
   const [profile] = useState(() => loadProfile());
   const [idealsViewOpen, setIdealsViewOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   function cycleHighlight() {
     const next = HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
     setHighlightMode(next);
     localStorage.setItem("highlightMode", next);
   }
+
+  const arrayIdx = analysis ? analysis.shots.indexOf(selectedShot!) : -1;
+  const prevShot = analysis && arrayIdx > 0 ? analysis.shots[arrayIdx - 1] : null;
+  const nextShot = analysis && arrayIdx < analysis.shots.length - 1 ? analysis.shots[arrayIdx + 1] : null;
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft"  && prevShot) setSelectedShot(prevShot);
+      if (e.key === "ArrowRight" && nextShot) setSelectedShot(nextShot);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [prevShot, nextShot, setSelectedShot]);
 
   if (!selectedShot || !analysis) {
     return (
@@ -183,11 +223,19 @@ export default function ShotPage() {
   }
 
   const shot = selectedShot;
-  const arrayIdx = analysis.shots.indexOf(shot);
   const isOutlier = analysis.outlierIndices.has(arrayIdx);
   const isPoorContact = analysis.poorContactShots.has(shot.index);
   const bagClub = findBagClub(shot.club, profile.bag);
   const groups = buildGroups(shot, bagClub);
+
+  function copyForAI() {
+    const flags = [...(isOutlier ? ["outlier"] : []), ...(isPoorContact ? ["poor contact"] : [])];
+    const text = buildCopyText(shot, groups, analysis.meta, flags);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
   const hideOutliers =
     typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true";
   const clubShots = analysis.shots.filter(
@@ -200,6 +248,22 @@ export default function ShotPage() {
       <NavBar />
 
       <div className="border-b px-6 py-2 flex items-center gap-3">
+        <button
+          onClick={() => prevShot && setSelectedShot(prevShot)}
+          disabled={!prevShot}
+          className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed text-base leading-none"
+          title="Previous shot (←)"
+        >
+          ←
+        </button>
+        <button
+          onClick={() => nextShot && setSelectedShot(nextShot)}
+          disabled={!nextShot}
+          className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed text-base leading-none"
+          title="Next shot (→)"
+        >
+          →
+        </button>
         <h1 className="text-sm font-semibold">
           {shot.club} · Shot #{shot.index}
         </h1>
@@ -209,6 +273,12 @@ export default function ShotPage() {
           {analysis.meta.date}
           {analysis.meta.place && ` · ${analysis.meta.place}`}
         </span>
+        <button
+          onClick={copyForAI}
+          className="ml-auto text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"
+        >
+          {copied ? "Copied!" : "Copy for AI"}
+        </button>
       </div>
 
       <main className="p-6">
