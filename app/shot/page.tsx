@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NavBar } from "@/components/NavBar";
 import { ImpactChart } from "@/components/ImpactChart";
@@ -52,7 +52,7 @@ function Stat({ label, value, sub, status, ideal, highlightMode }: StatRowProps 
   return (
     <div className="relative group">
       <Card className={[
-        "aspect-square flex flex-col items-center justify-center text-center p-3 gap-1 max-w-32",
+        "aspect-square flex flex-col items-center justify-center text-center p-3 gap-1 max-w-32 bg-muted/40",
         showGood ? "ring-2 ring-green-500" : "",
         showBad  ? "ring-2 ring-red-500"   : "",
       ].join(" ")}>
@@ -216,14 +216,9 @@ export default function ShotPage() {
       </div>
 
       <main className="p-6">
-        <div className="grid gap-4 lg:gap-6 xl:gap-8 items-start grid-cols-1 lg:grid-cols-[260px_minmax(0,480px)] xl:grid-cols-[260px_minmax(0,480px)_220px] mx-auto w-fit">
+        <div className="grid gap-4 lg:gap-6 xl:gap-8 items-start grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)_280px] max-w-300 mx-auto w-full">
           <div className="flex flex-col gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
-                  Face to Path
-                </CardTitle>
-              </CardHeader>
+            <Card className="bg-muted/40">
               <CardContent>
                 <FaceToPath
                   launchDirection={shot.launchDirection}
@@ -234,12 +229,7 @@ export default function ShotPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
-                  Dynamic Loft
-                </CardTitle>
-              </CardHeader>
+            <Card className="bg-muted/40">
               <CardContent>
                 <LoftDiagram
                   launchAngle={shot.launchAngle}
@@ -250,12 +240,7 @@ export default function ShotPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-normal">
-                  Impact Location
-                </CardTitle>
-              </CardHeader>
+            <Card className="bg-muted/40">
               <CardContent className="flex justify-center">
                 <ImpactChart
                   horizontal={shot.impactHorizontal}

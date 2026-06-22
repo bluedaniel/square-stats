@@ -63,6 +63,9 @@ export function ImpactChart({ horizontal, vertical, club }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-2">
+      <p className="text-xs text-muted-foreground tabular-nums">
+        {hLabel} · {vLabel}
+      </p>
       <div
         className="relative select-none"
         style={{ width: 240, height: Math.round(240 * 449 / 512) }}
@@ -97,9 +100,6 @@ export function ImpactChart({ horizontal, vertical, club }: Props) {
           opacity: 0.9, pointerEvents: "none",
         }} />
       </div>
-      <p className="text-xs text-muted-foreground tabular-nums">
-        {hLabel} · {vLabel}
-      </p>
     </div>
   );
 }
