@@ -6,7 +6,6 @@ import { NavBar } from "@/components/NavBar";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { AddClubModal } from "@/components/AddClubModal";
 import { ClubIdealsModal } from "@/components/ClubIdealsModal";
 import { DefaultIdealsModal } from "@/components/DefaultIdealsModal";
@@ -86,18 +85,9 @@ function ProfilePageInner() {
               ))}
             </SelectContent>
           </Select>
-        </section>
-
-        {/* Name */}
-        <section className="space-y-2">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            Your name
-          </label>
-          <Input
-            value={profile.name}
-            onChange={e => updateAndSave({ name: e.target.value })}
-            placeholder="e.g. Daniel"
-          />
+          <p className="text-xs text-muted-foreground">
+            Your handicap sets the ideal ranges used to grade your shots — lower handicaps get tighter windows for carry, spin, and face-to-path.
+          </p>
         </section>
 
         {/* Bag */}
