@@ -94,6 +94,12 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
           >
             All shots
           </Link>
+          <Link
+            href="/profile"
+            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
+          >
+            Profile
+          </Link>
           <button
             onClick={onReset}
             className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
