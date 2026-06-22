@@ -59,163 +59,109 @@ export function FaceToPath({
   const ballY = REF_Y - LINE * Math.sin(launchDirection * DEG);
 
   return (
-    <svg
-      viewBox="-200 -100 400 320"
-      className="w-full"
-      aria-label={`Launch ${fmtDir(launchDirection)}, Face to Path ${fmtDir(facePath)}, Club Path ${fmtDir(clubPath)}`}
-    >
-      <defs>
-        <filter id="drop-shadow-ftp">
-          <feDropShadow
-            dx="0"
-            dy="2"
-            stdDeviation="3"
-            floodColor="black"
-            floodOpacity="0.5"
-          />
-        </filter>
-      </defs>
+    <div aria-label={`Launch ${fmtDir(launchDirection)}, Face to Path ${fmtDir(facePath)}, Club Path ${fmtDir(clubPath)}`}>
+      <svg viewBox="-200 -100 400 210" className="w-full">
+        <defs>
+          <filter id="drop-shadow-ftp">
+            <feDropShadow
+              dx="0"
+              dy="2"
+              stdDeviation="3"
+              floodColor="black"
+              floodOpacity="0.5"
+            />
+          </filter>
+        </defs>
 
-      {/* Club top-down image: 200×200 box, face left edge ≈ x=-50 */}
-      <image
-        href={`/faces/${cfg.image}`}
-        x={cfg.imgX}
-        y={-100}
-        width={200}
-        height={200}
-        filter="url(#drop-shadow-ftp)"
-      />
+        <image
+          href={`/faces/${cfg.image}`}
+          x={cfg.imgX}
+          y={-100}
+          width={200}
+          height={200}
+          filter="url(#drop-shadow-ftp)"
+        />
 
-      {/* Reference line at REF_Y */}
-      <line
-        x1="-200"
-        y1={REF_Y}
-        x2="200"
-        y2={REF_Y}
-        strokeWidth={4}
-        opacity={0.1}
-        stroke="currentColor"
-      />
+        <line
+          x1="-200"
+          y1={REF_Y}
+          x2="200"
+          y2={REF_Y}
+          strokeWidth={4}
+          opacity={0.1}
+          stroke="currentColor"
+        />
 
-      {/* Launch direction (green) — left from impact, rotated by launchDirection */}
-      <line
-        x1="0"
-        y1={REF_Y}
-        x2={-LINE}
-        y2={REF_Y}
-        strokeWidth={4}
-        stroke="#22c55e"
-        style={{
-          transform: `rotate(${launchDirection}deg)`,
-          transformOrigin: "100% 0%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1={REF_Y}
+          x2={-LINE}
+          y2={REF_Y}
+          strokeWidth={4}
+          stroke="#22c55e"
+          style={{
+            transform: `rotate(${launchDirection}deg)`,
+            transformOrigin: "100% 0%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Club path (orange) — right from impact, rotated by clubPath */}
-      <line
-        x1="0"
-        y1={REF_Y}
-        x2={LINE}
-        y2={REF_Y}
-        strokeWidth={4}
-        stroke="#f97316"
-        style={{
-          transform: `rotate(${clubPath}deg)`,
-          transformOrigin: "0% 0%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1={REF_Y}
+          x2={LINE}
+          y2={REF_Y}
+          strokeWidth={4}
+          stroke="#f97316"
+          style={{
+            transform: `rotate(${clubPath}deg)`,
+            transformOrigin: "0% 0%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Face angle (yellow) — vertical through impact, rotated by face-to-path */}
-      <line
-        x1="0"
-        y1={REF_Y - 50}
-        x2="0"
-        y2={REF_Y + 50}
-        strokeWidth={4}
-        stroke="#eab308"
-        style={{
-          transform: `rotate(${facePath}deg)`,
-          transformOrigin: "0% 50%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1={REF_Y - 50}
+          x2="0"
+          y2={REF_Y + 50}
+          strokeWidth={4}
+          stroke="#eab308"
+          style={{
+            transform: `rotate(${facePath}deg)`,
+            transformOrigin: "0% 50%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Ball */}
-      <image
-        href="/balls/RealGolfBall.png"
-        x={-ballR}
-        y={-ballR}
-        width={ballR * 2}
-        height={ballR * 2}
-        style={{
-          transform: `translateX(${ballX}px) translateY(${ballY}px)`,
-          transformOrigin: "50% 50%",
-          transformBox: "fill-box",
-        }}
-      />
+        <image
+          href="/balls/RealGolfBall.png"
+          x={-ballR}
+          y={-ballR}
+          width={ballR * 2}
+          height={ballR * 2}
+          style={{
+            transform: `translateX(${ballX}px) translateY(${ballY}px)`,
+            transformOrigin: "50% 50%",
+            transformBox: "fill-box",
+          }}
+        />
+      </svg>
 
-      {/* Label names */}
-      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#22c55e">
-        <tspan x="-130" y="125">
-          Horizontal
-        </tspan>
-        <tspan x="-130" y="151">
-          Launch
-        </tspan>
-      </text>
-      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#eab308">
-        <tspan x="0" y="125">
-          Face to
-        </tspan>
-        <tspan x="0" y="151">
-          Club Path
-        </tspan>
-      </text>
-      <text textAnchor="middle" fontWeight="bold" fontSize={18} fill="#f97316">
-        <tspan x="130" y="125">
-          Club
-        </tspan>
-        <tspan x="130" y="151">
-          Path
-        </tspan>
-      </text>
-
-      {/* Label values */}
-      <text
-        x="-130"
-        y="195"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {fmtDir(launchDirection)}
-      </text>
-      <text
-        x="0"
-        y="195"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {fmtDir(facePath)}
-      </text>
-      <text
-        x="130"
-        y="195"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {fmtDir(clubPath)}
-      </text>
-    </svg>
+      <div className="grid grid-cols-3 text-center mt-2">
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>Horizontal Launch</p>
+          <p className="text-sm font-bold">{fmtDir(launchDirection)}</p>
+        </div>
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#eab308" }}>Face to Club Path</p>
+          <p className="text-sm font-bold">{fmtDir(facePath)}</p>
+        </div>
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#f97316" }}>Club Path</p>
+          <p className="text-sm font-bold">{fmtDir(clubPath)}</p>
+        </div>
+      </div>
+    </div>
   );
 }

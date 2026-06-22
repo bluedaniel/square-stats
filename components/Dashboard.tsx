@@ -7,6 +7,9 @@ import { DispersionChart } from "@/components/DispersionChart";
 import { DistanceHistogram } from "@/components/DistanceHistogram";
 import { TrendChart } from "@/components/TrendChart";
 import { SpinChart } from "@/components/SpinChart";
+import { SessionFaceToPath } from "@/components/SessionFaceToPath";
+import { SessionImpactChart } from "@/components/SessionImpactChart";
+import { SessionLoftDiagram } from "@/components/SessionLoftDiagram";
 import { StatsTable } from "@/components/StatsTable";
 import { recomputeClubStats } from "@/utils/analyze";
 import { SessionMeta } from "@/components/SessionMeta";
@@ -102,6 +105,12 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <TrendChart shots={filteredShots} />
           <SpinChart shots={filteredShots} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <SessionFaceToPath shots={filteredShots} club={selectedClub} />
+          <SessionLoftDiagram shots={filteredShots} club={selectedClub} />
+          <SessionImpactChart shots={filteredShots} club={selectedClub} />
         </div>
 
         <StatsTable clubStats={visibleClubStats} />

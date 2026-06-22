@@ -98,162 +98,108 @@ export function LoftDiagram({
   const aoaLabel = `${attackAngle > 0 ? "+" : ""}${attackAngle.toFixed(1)}°`;
 
   return (
-    <svg
-      viewBox="-200 -140 400 320"
-      className="w-full"
-      aria-label={`Launch ${launchAngle.toFixed(1)}°, Loft ${dynamicLoft.toFixed(1)}°, AoA ${attackAngle.toFixed(1)}°`}
-    >
-      <defs>
-        <filter id="drop-shadow-dl">
-          <feDropShadow
-            dx="0"
-            dy="2"
-            stdDeviation="3"
-            floodColor="black"
-            floodOpacity="0.5"
-          />
-        </filter>
-      </defs>
+    <div aria-label={`Launch ${launchAngle.toFixed(1)}°, Loft ${dynamicLoft.toFixed(1)}°, AoA ${attackAngle.toFixed(1)}°`}>
+      <svg viewBox="-200 -140 400 210" className="w-full">
+        <defs>
+          <filter id="drop-shadow-dl">
+            <feDropShadow
+              dx="0"
+              dy="2"
+              stdDeviation="3"
+              floodColor="black"
+              floodOpacity="0.5"
+            />
+          </filter>
+        </defs>
 
-      {/* Club: leading edge at (0,0) */}
-      <image
-        href={`/faces/${cfg.image}`}
-        x={imgX}
-        y={imgY}
-        width={imgW}
-        height={imgH}
-      />
+        <image
+          href={`/faces/${cfg.image}`}
+          x={imgX}
+          y={imgY}
+          width={imgW}
+          height={imgH}
+        />
 
-      {/* Ground */}
-      <line
-        x1="-200"
-        y1="0"
-        x2="200"
-        y2="0"
-        strokeWidth={4}
-        opacity={0.1}
-        stroke="currentColor"
-      />
+        <line
+          x1="-200"
+          y1="0"
+          x2="200"
+          y2="0"
+          strokeWidth={4}
+          opacity={0.1}
+          stroke="currentColor"
+        />
 
-      {/* Attack angle (orange) — right-going line rotated by attackAngle */}
-      <line
-        x1="0"
-        y1="0"
-        x2={LINE}
-        y2="0"
-        strokeWidth={4}
-        stroke="#f97316"
-        style={{
-          transform: `rotate(${attackAngle}deg)`,
-          transformOrigin: "0% 0%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1="0"
+          x2={LINE}
+          y2="0"
+          strokeWidth={4}
+          stroke="#f97316"
+          style={{
+            transform: `rotate(${attackAngle}deg)`,
+            transformOrigin: "0% 0%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Dynamic loft (yellow) — vertical line rotated by dynamicLoft */}
-      <line
-        x1="0"
-        y1={-LO}
-        x2="0"
-        y2={LO}
-        strokeWidth={4}
-        stroke="#eab308"
-        style={{
-          transform: `rotate(${dynamicLoft}deg)`,
-          transformOrigin: "0% 50%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1={-LO}
+          x2="0"
+          y2={LO}
+          strokeWidth={4}
+          stroke="#eab308"
+          style={{
+            transform: `rotate(${dynamicLoft}deg)`,
+            transformOrigin: "0% 50%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Launch angle (green) — left-going line rotated by launchAngle */}
-      <line
-        x1="0"
-        y1="0"
-        x2={-LINE}
-        y2="0"
-        strokeWidth={4}
-        stroke="#22c55e"
-        style={{
-          transform: `rotate(${launchAngle}deg)`,
-          transformOrigin: "100% 0%",
-          transformBox: "fill-box",
-        }}
-      />
+        <line
+          x1="0"
+          y1="0"
+          x2={-LINE}
+          y2="0"
+          strokeWidth={4}
+          stroke="#22c55e"
+          style={{
+            transform: `rotate(${launchAngle}deg)`,
+            transformOrigin: "100% 0%",
+            transformBox: "fill-box",
+          }}
+        />
 
-      {/* Ball */}
-      <image
-        href="/balls/RealGolfBall.png"
-        x={-ballR}
-        y={-ballR}
-        width={ballR * 2}
-        height={ballR * 2}
-        style={{
-          transform: `translateX(${ballX}px) translateY(${ballY}px)`,
-          transformOrigin: "50% 50%",
-          transformBox: "fill-box",
-        }}
-      />
+        <image
+          href="/balls/RealGolfBall.png"
+          x={-ballR}
+          y={-ballR}
+          width={ballR * 2}
+          height={ballR * 2}
+          style={{
+            transform: `translateX(${ballX}px) translateY(${ballY}px)`,
+            transformOrigin: "50% 50%",
+            transformBox: "fill-box",
+          }}
+        />
+      </svg>
 
-      {/* Label names */}
-      <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#f97316">
-        <tspan x="130" y="90">
-          Angle of
-        </tspan>
-        <tspan x="130" y="116">
-          Attack
-        </tspan>
-      </text>
-      <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#eab308">
-        <tspan x="0" y="90">
-          Dynamic
-        </tspan>
-        <tspan x="0" y="116">
-          Loft
-        </tspan>
-      </text>
-      <text fontWeight="bold" textAnchor="middle" fontSize={18} fill="#22c55e">
-        <tspan x="-130" y="90">
-          Launch
-        </tspan>
-        <tspan x="-130" y="116">
-          Angle
-        </tspan>
-      </text>
-
-      {/* Label values */}
-      <text
-        x="130"
-        y="160"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {aoaLabel}
-      </text>
-      <text
-        x="0"
-        y="160"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {dynamicLoft.toFixed(1)}°
-      </text>
-      <text
-        x="-130"
-        y="160"
-        textAnchor="middle"
-        fontSize={24}
-        dominantBaseline="text-after-edge"
-        fontWeight="bold"
-        style={{ fill: "var(--secondary-foreground)" }}
-      >
-        {launchAngle.toFixed(1)}°
-      </text>
-    </svg>
+      <div className="grid grid-cols-3 text-center mt-2">
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>Launch Angle</p>
+          <p className="text-sm font-bold">{launchAngle.toFixed(1)}°</p>
+        </div>
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#eab308" }}>Dynamic Loft</p>
+          <p className="text-sm font-bold">{dynamicLoft.toFixed(1)}°</p>
+        </div>
+        <div>
+          <p className="text-xs font-bold" style={{ color: "#f97316" }}>Angle of Attack</p>
+          <p className="text-sm font-bold">{aoaLabel}</p>
+        </div>
+      </div>
+    </div>
   );
 }

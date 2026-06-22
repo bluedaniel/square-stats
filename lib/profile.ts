@@ -75,6 +75,43 @@ export function loadProfile(): UserProfile {
 
 export function saveProfile(profile: UserProfile): void {
   localStorage.setItem(LS_KEY, JSON.stringify(profile));
+  saveTauri(profile);
+}
+
+// ─── Tauri persistence (appDataDir survives app updates) ─────────────────────
+
+const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+
+async function getProfilePath(): Promise<string | null> {
+  if (!isTauri) return null;
+  try {
+    const { appDataDir, join } = await import("@tauri-apps/api/path");
+    return join(await appDataDir(), "profile.json");
+  } catch { return null; }
+}
+
+function saveTauri(profile: UserProfile): void {
+  if (!isTauri) return;
+  (async () => {
+    const path = await getProfilePath();
+    if (!path) return;
+    const { invoke } = await import("@tauri-apps/api/core");
+    await invoke("write_file", { path, content: JSON.stringify(profile) });
+  })();
+}
+
+// Called once on app boot. If localStorage is empty (e.g. after an update
+// cleared WebView data), restores profile from the persistent file.
+export async function syncProfileFromTauri(): Promise<void> {
+  if (!isTauri) return;
+  if (typeof window === "undefined" || localStorage.getItem(LS_KEY)) return;
+  try {
+    const path = await getProfilePath();
+    if (!path) return;
+    const { invoke } = await import("@tauri-apps/api/core");
+    const content = await invoke<string>("read_file", { path });
+    localStorage.setItem(LS_KEY, content);
+  } catch {} // file not found on first launch — that's fine
 }
 
 const ABBREV: Record<string, string> = {
