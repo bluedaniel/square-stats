@@ -275,7 +275,7 @@ export default function ShotsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <NavBar right={highlightButton} />
+      <NavBar />
 
       <div className="border-b px-6 py-2 flex items-center justify-between gap-4">
         <p className="text-xs text-muted-foreground shrink-0">
@@ -309,7 +309,9 @@ export default function ShotsPage() {
       </div>
 
       <main className="p-6 space-y-3">
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <div>{highlightButton}</div>
+          <div className="flex items-center gap-2">
           <button
             onClick={() => setLlmOpen(true)}
             className="px-2.5 py-1 rounded border border-border text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -360,6 +362,7 @@ export default function ShotsPage() {
               </Menu.Positioner>
             </Menu.Portal>
           </Menu.Root>
+          </div>
         </div>
         <div className="rounded-md border overflow-x-auto">
           <Table>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface Props {
   right?: React.ReactNode;
@@ -40,7 +41,10 @@ export function NavBar({ right }: Props) {
           </Link>
         ))}
       </div>
-      {right && <div className="flex items-center gap-2">{right}</div>}
+      <div className="flex items-center gap-2">
+        {right}
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
