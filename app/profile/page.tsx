@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { NavBar } from "@/components/NavBar";
 import {
@@ -12,7 +12,7 @@ import { ClubIdealsModal } from "@/components/ClubIdealsModal";
 import { DefaultIdealsModal } from "@/components/DefaultIdealsModal";
 import { loadProfile, saveProfile, csvToLabel, HANDICAP_OPTIONS, type UserProfile, type BagClub, type ClubStatKey, type IdealRange } from "@/lib/profile";
 
-export default function ProfilePage() {
+function ProfilePageInner() {
   const searchParams = useSearchParams();
   const addClubParam = searchParams.get("addClub");
   const [profile, setProfile] = useState<UserProfile>(() => loadProfile());
@@ -178,5 +178,13 @@ export default function ProfilePage() {
       <AddClubModal open={addOpen} initialLabel={addInitialLabel} onClose={handleAddClose} />
       <ClubIdealsModal key={editIdealsClub?.id ?? "none"} club={editIdealsClub} handicap={profile.handicap} onClose={handleIdealsClose} />
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense>
+      <ProfilePageInner />
+    </Suspense>
   );
 }

@@ -160,7 +160,7 @@ export default function ShotPage() {
   const { selectedShot, analysis } = useSession();
   const router = useRouter();
   const [highlightMode, setHighlightMode] = useState<HighlightMode>(() =>
-    (localStorage.getItem("highlightMode") as HighlightMode) ?? "off"
+    ((typeof window !== "undefined" && localStorage.getItem("highlightMode")) as HighlightMode) ?? "off"
   );
   const [profile] = useState(() => loadProfile());
   const [idealsViewOpen, setIdealsViewOpen] = useState(false);
@@ -192,8 +192,7 @@ export default function ShotPage() {
   const bagClub = findBagClub(shot.club, profile.bag);
   const groups = buildGroups(shot, bagClub);
   const hideOutliers =
-    typeof window !== "undefined" &&
-    localStorage.getItem("hideOutliers") === "true";
+    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true";
   const clubShots = analysis.shots.filter(
     (s, i) =>
       s.club === shot.club && !(hideOutliers && analysis.outlierIndices.has(i)),

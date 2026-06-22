@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Square Stats
 
-## Getting Started
+A local desktop app for analysing Square Omni launch monitor sessions. Drop in a CSV export and get shot dispersion, distance histograms, spin charts, trend lines, and a per-shot breakdown with club face diagrams — all offline, no account required.
 
-First, run the development server:
+## What it does
 
+- **Session dashboard** — overview of dispersion, carry distribution, ball speed trend, and smash/spin scatter for any club or the full session
+- **All shots table** — filterable, sortable shot log with outlier detection and poor-contact flagging
+- **Shot detail** — per-shot stats (distance, speed, launch, spin, club data) with face-to-path diagram, loft diagram, and impact location overlay
+- **Club ideals** — set ideal ranges per club; stats highlight green/amber/red against your benchmarks
+- **Dark mode** — full light/dark theme
+
+## Running it
+
+**Dev (live reload):**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run tauri dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Build distributable `.app`:**
+```bash
+npm run tauri build
+# → src-tauri/target/release/bundle/macos/
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Requires [Rust](https://rustup.rs) installed.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## CSV format
 
-## Learn More
+Accepts Square Omni exports. Drop the `.csv` file onto the landing screen or use the Load button. The app reads session metadata (date, location) from the header rows and skips `Average`/`Deviation` summary rows automatically.
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Tauri v2](https://tauri.app) — native shell, no Electron
+- [Next.js](https://nextjs.org) — static export frontend
+- [Recharts](https://recharts.org) — charts
+- [shadcn/ui](https://ui.shadcn.com) — UI components
