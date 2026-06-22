@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Square Stats ${{ github.ref_name }}
+          releaseBody: |
+            ## What's new
+
+            See commit history for changes.
+
+            ---
+            **Install:** download `Square.Stats_${{ github.ref_name }}_aarch64.dmg` (Apple Silicon) or `Square.Stats_${{ github.ref_name }}_x64.dmg` (Intel).
+            First launch: right-click the app → Open (once, to bypass Gatekeeper).
+          releaseDraft: false
+          prerelease: false
