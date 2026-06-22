@@ -14,10 +14,8 @@ import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub } from "@/lib/profile";
 import { IdealsViewModal } from "@/components/IdealsViewModal";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
 import type { Shot } from "@/types/shot";
-
-type HighlightMode = "off" | "positive" | "negative" | "both";
 
 function fmtDir(n: number): string {
   if (n === 0) return "0";
@@ -165,9 +163,8 @@ export default function ShotPage() {
   const [profile] = useState(() => loadProfile());
   const [idealsViewOpen, setIdealsViewOpen] = useState(false);
 
-  const CYCLE: HighlightMode[] = ["off", "positive", "negative", "both"];
   function cycleHighlight() {
-    const next = CYCLE[(CYCLE.indexOf(highlightMode) + 1) % CYCLE.length];
+    const next = HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
     setHighlightMode(next);
     localStorage.setItem("highlightMode", next);
   }
@@ -253,19 +250,7 @@ export default function ShotPage() {
           <div className="flex flex-col gap-4 lg:gap-6">
             {bagClub ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Highlight ideals:</span>
-                <Button
-                  onClick={cycleHighlight}
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    highlightMode === "positive" && "bg-green-500 text-white border-green-500 hover:bg-green-500/80 hover:text-white",
-                    highlightMode === "negative" && "bg-red-500 text-white border-red-500 hover:bg-red-500/80 hover:text-white",
-                    highlightMode === "both"     && "bg-primary text-primary-foreground border-primary hover:bg-primary/80",
-                  )}
-                >
-                  {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
-                </Button>
+                <HighlightToggle mode={highlightMode} onCycle={cycleHighlight} />
                 <Button
                   onClick={() => setIdealsViewOpen(true)}
                   variant="link"

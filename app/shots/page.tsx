@@ -32,7 +32,7 @@ import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, type ClubStatKey } from "@/lib/profile";
 import { SessionMeta } from "@/components/SessionMeta";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
 import type { Shot } from "@/types/shot";
 
 // Augment TanStack meta type
@@ -42,9 +42,6 @@ declare module "@tanstack/react-table" {
     statKey?: ClubStatKey;
   }
 }
-
-type HighlightMode = "off" | "positive" | "negative" | "both";
-const CYCLE: HighlightMode[] = ["off", "positive", "negative", "both"];
 
 function fmtDir(n: number): string {
   if (n === 0) return "0";
@@ -175,7 +172,7 @@ export default function ShotsPage() {
   }, [columnVisibility]);
 
   function cycleHighlight() {
-    const next = CYCLE[(CYCLE.indexOf(highlightMode) + 1) % CYCLE.length];
+    const next = HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
     setHighlightMode(next);
     localStorage.setItem("highlightMode", next);
   }
@@ -260,23 +257,9 @@ export default function ShotsPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const highlightButton = profile.bag.length > 0 ? (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-muted-foreground">Highlight ideals:</span>
-      <Button
-        onClick={cycleHighlight}
-        size="sm"
-        variant="outline"
-        className={cn(
-          highlightMode === "positive" && "bg-green-500 text-white border-green-500 hover:bg-green-500/80 hover:text-white",
-          highlightMode === "negative" && "bg-red-500 text-white border-red-500 hover:bg-red-500/80 hover:text-white",
-          highlightMode === "both"     && "bg-primary text-primary-foreground border-primary hover:bg-primary/80",
-        )}
-      >
-        {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
-      </Button>
-    </div>
-  ) : null;
+  const highlightButton = profile.bag.length > 0
+    ? <HighlightToggle mode={highlightMode} onCycle={cycleHighlight} />
+    : null;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
