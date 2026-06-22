@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub } from "@/lib/profile";
 import { IdealsViewModal } from "@/components/IdealsViewModal";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Shot } from "@/types/shot";
 
 type HighlightMode = "off" | "positive" | "negative" | "both";
@@ -268,32 +270,34 @@ export default function ShotPage() {
             {bagClub ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">Highlight ideals:</span>
-                <button onClick={cycleHighlight} className={[
-                  "px-3 py-1 rounded border text-xs font-medium",
-                  highlightMode === "positive" ? "bg-green-500 text-white border-green-500" :
-                  highlightMode === "negative" ? "bg-red-500 text-white border-red-500" :
-                  highlightMode === "both"     ? "bg-primary text-primary-foreground border-primary" :
-                  "text-muted-foreground border-border",
-                ].join(" ")}>
-                  {highlightMode === "off"      ? "Off" :
-                   highlightMode === "positive" ? "Positive" :
-                   highlightMode === "negative" ? "Negative" :
-                                                  "Both"}
-                </button>
-                <button
+                <Button
+                  onClick={cycleHighlight}
+                  size="sm"
+                  variant="outline"
+                  className={cn(
+                    highlightMode === "positive" && "bg-green-500 text-white border-green-500 hover:bg-green-500/80 hover:text-white",
+                    highlightMode === "negative" && "bg-red-500 text-white border-red-500 hover:bg-red-500/80 hover:text-white",
+                    highlightMode === "both"     && "bg-primary text-primary-foreground border-primary hover:bg-primary/80",
+                  )}
+                >
+                  {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
+                </Button>
+                <Button
                   onClick={() => setIdealsViewOpen(true)}
-                  className="text-xs text-muted-foreground hover:text-foreground underline"
+                  variant="link"
+                  size="sm"
                 >
                   · {bagClub.label} ideals
-                </button>
+                </Button>
               </div>
             ) : (
-              <button
+              <Button
                 onClick={() => router.push(`/profile?addClub=${encodeURIComponent(shot.club)}`)}
-                className="text-xs text-muted-foreground hover:text-foreground underline"
+                variant="link"
+                size="sm"
               >
                 Add {csvToLabel(shot.club)} to profile to highlight ideals
-              </button>
+              </Button>
             )}
             {groups.map((g) => (
               <StatGroup

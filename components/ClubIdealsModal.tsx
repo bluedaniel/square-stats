@@ -5,6 +5,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   CLUB_STAT_KEYS, CLUB_STAT_META, getDefaultIdeals,
   type ClubStatKey, type IdealRange, type BagClub, type Handicap,
@@ -132,12 +133,9 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">1. Copy this prompt into ChatGPT or Claude</p>
-                <button
-                  onClick={handleCopy}
-                  className="text-xs px-2 py-0.5 rounded border border-border hover:bg-muted"
-                >
+                <Button onClick={handleCopy} variant="outline" size="xs">
                   {copied ? "Copied!" : "Copy"}
-                </button>
+                </Button>
               </div>
               <textarea
                 readOnly
@@ -162,30 +160,20 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
             </div>
 
             <div className="flex items-center justify-between">
-              <button
-                onClick={() => setMode("manual")}
-                className="text-xs text-muted-foreground underline hover:text-foreground"
-              >
+              <Button onClick={() => setMode("manual")} variant="link" size="sm">
                 Enter manually
-              </button>
-              <button
-                onClick={handleApply}
-                disabled={!pasteText.trim()}
-                className="px-3 py-1.5 rounded text-sm bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"
-              >
+              </Button>
+              <Button onClick={handleApply} disabled={!pasteText.trim()} size="sm">
                 Apply
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-3">
             <div className="flex justify-end">
-              <button
-                onClick={() => setMode("ai")}
-                className="text-xs text-muted-foreground underline hover:text-foreground"
-              >
+              <Button onClick={() => setMode("ai")} variant="link" size="sm">
                 Generate with AI
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-[1fr_80px_80px] gap-x-2 gap-y-2 items-center">
@@ -220,30 +208,15 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
             </div>
 
             <DialogFooter>
-              <button
-                onClick={() => onClose(null)}
-                className="px-4 py-1.5 rounded text-sm border border-border hover:bg-muted"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-1.5 rounded text-sm bg-primary text-primary-foreground hover:opacity-90"
-              >
-                Save
-              </button>
+              <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
+              <Button onClick={handleSave}>Save</Button>
             </DialogFooter>
           </div>
         )}
 
         {mode === "ai" && (
           <DialogFooter>
-            <button
-              onClick={() => onClose(null)}
-              className="px-4 py-1.5 rounded text-sm border border-border hover:bg-muted"
-            >
-              Cancel
-            </button>
+            <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
           </DialogFooter>
         )}
       </DialogContent>

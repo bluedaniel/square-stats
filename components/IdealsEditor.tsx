@@ -4,10 +4,12 @@ import { useState } from "react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   CLUB_KEYS, CLUB_LABELS, STAT_KEYS, STAT_LABELS,
   type IdealsConfig, type ClubKey, type StatKey, type IdealRange,
-  saveIdeals, resetIdeals, DEFAULT_IDEALS,
+  saveIdeals, resetIdeals,
 } from "@/lib/ideals";
 
 interface Props {
@@ -66,22 +68,19 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
           <DialogTitle>Ideal Ranges</DialogTitle>
         </DialogHeader>
 
-        {/* Club tabs */}
         <div className="flex gap-1 flex-wrap">
           {CLUB_KEYS.map(k => (
-            <button key={k} onClick={() => setClub(k)}
-              className={[
-                "px-3 py-1 rounded text-xs font-medium transition-colors",
-                club === k
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground",
-              ].join(" ")}>
+            <Button
+              key={k}
+              onClick={() => setClub(k)}
+              variant={club === k ? "default" : "ghost"}
+              size="sm"
+            >
               {CLUB_LABELS[k]}
-            </button>
+            </Button>
           ))}
         </div>
 
-        {/* Stat rows */}
         <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-2 items-center text-sm">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Stat</span>
           <span className="text-xs text-muted-foreground uppercase tracking-wide text-center w-20">Min</span>
@@ -92,23 +91,23 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
             return (
               <>
                 <span key={`${key}-label`} className="text-sm">{STAT_LABELS[key]}</span>
-                <input
+                <Input
                   key={`${key}-min`}
                   type="number"
                   step="any"
                   value={range?.min ?? ""}
                   placeholder="—"
                   onChange={e => setRange(key, "min", e.target.value)}
-                  className="w-20 rounded border border-input bg-background px-2 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="w-20 h-8 text-sm text-center px-2 tabular-nums"
                 />
-                <input
+                <Input
                   key={`${key}-max`}
                   type="number"
                   step="any"
                   value={range?.max ?? ""}
                   placeholder="—"
                   onChange={e => setRange(key, "max", e.target.value)}
-                  className="w-20 rounded border border-input bg-background px-2 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="w-20 h-8 text-sm text-center px-2 tabular-nums"
                 />
               </>
             );
@@ -116,18 +115,9 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
         </div>
 
         <DialogFooter className="gap-2">
-          <button onClick={handleReset}
-            className="text-xs text-muted-foreground hover:text-foreground underline">
-            Reset to defaults
-          </button>
-          <button onClick={() => onClose(null)}
-            className="px-4 py-1.5 rounded text-sm border border-border hover:bg-muted">
-            Cancel
-          </button>
-          <button onClick={handleSave}
-            className="px-4 py-1.5 rounded text-sm bg-primary text-primary-foreground hover:opacity-90">
-            Save
-          </button>
+          <Button onClick={handleReset} variant="link" size="sm">Reset to defaults</Button>
+          <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

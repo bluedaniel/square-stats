@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { NavBar } from "@/components/NavBar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -31,6 +30,9 @@ import {
 import { Menu } from "@base-ui/react/menu";
 import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, type ClubStatKey } from "@/lib/profile";
+import { SessionMeta } from "@/components/SessionMeta";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Shot } from "@/types/shot";
 
 // Augment TanStack meta type
@@ -261,15 +263,18 @@ export default function ShotsPage() {
   const highlightButton = profile.bag.length > 0 ? (
     <div className="flex items-center gap-2">
       <span className="text-xs text-muted-foreground">Highlight ideals:</span>
-      <button onClick={cycleHighlight} className={[
-        "px-2.5 py-1 rounded border text-xs font-medium",
-        highlightMode === "positive" ? "bg-green-500 text-white border-green-500" :
-        highlightMode === "negative" ? "bg-red-500 text-white border-red-500" :
-        highlightMode === "both"     ? "bg-primary text-primary-foreground border-primary" :
-        "text-muted-foreground border-border",
-      ].join(" ")}>
+      <Button
+        onClick={cycleHighlight}
+        size="sm"
+        variant="outline"
+        className={cn(
+          highlightMode === "positive" && "bg-green-500 text-white border-green-500 hover:bg-green-500/80 hover:text-white",
+          highlightMode === "negative" && "bg-red-500 text-white border-red-500 hover:bg-red-500/80 hover:text-white",
+          highlightMode === "both"     && "bg-primary text-primary-foreground border-primary hover:bg-primary/80",
+        )}
+      >
         {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
-      </button>
+      </Button>
     </div>
   ) : null;
 
@@ -277,61 +282,51 @@ export default function ShotsPage() {
     <div className="min-h-screen bg-background text-foreground">
       <NavBar />
 
-      <div className="border-b px-6 py-2 flex items-center justify-between gap-4">
-        <p className="text-xs text-muted-foreground shrink-0">
-          {analysis.meta.date}
-          {analysis.meta.place && ` · ${analysis.meta.place}`}
-          {" · "}
-          <span className="italic">{filename}</span>
-          {" · "}
-          {rowCount} shot{rowCount !== 1 ? "s" : ""}
-        </p>
-        <div className="flex flex-wrap gap-1.5 items-center justify-end">
-          {clubs.map(club => (
-            <Badge
-              key={club}
-              variant={club === selectedClub ? "default" : "outline"}
-              className="cursor-pointer select-none"
-              onClick={() => setSelectedClub(club)}
-            >
-              {club}
-            </Badge>
-          ))}
-          <div className="w-px h-4 bg-border mx-0.5" />
-          <Badge
-            variant={hideOutliers ? "default" : "outline"}
-            className="cursor-pointer select-none"
-            onClick={() => setHideOutliers(v => !v)}
-          >
-            {hideOutliers ? `Outliers hidden (${outlierCount})` : `Hide outliers (${outlierCount})`}
-          </Badge>
-        </div>
+      <div className="border-b px-6 py-2">
+        <SessionMeta
+          meta={analysis.meta}
+          filename={filename}
+          suffix={`${rowCount} shot${rowCount !== 1 ? "s" : ""}`}
+          outlierCount={outlierCount}
+          hideOutliers={hideOutliers}
+          onToggleOutliers={setHideOutliers}
+        />
       </div>
 
       <main className="p-6 space-y-3">
+        <div className="flex items-center bg-muted rounded-lg p-0.5 gap-0.5 overflow-x-auto w-fit mx-auto">
+          {clubs.map(club => (
+            <button
+              key={club}
+              onClick={() => setSelectedClub(club)}
+              className={[
+                "px-2.5 py-1 text-xs rounded-md whitespace-nowrap transition-colors select-none",
+                club === selectedClub
+                  ? "bg-background shadow-sm text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground",
+              ].join(" ")}
+            >
+              {club}
+            </button>
+          ))}
+        </div>
+
         <div className="flex items-center justify-between gap-2">
           <div>{highlightButton}</div>
           <div className="flex items-center gap-2">
-          <button
-            onClick={() => setLlmOpen(true)}
-            className="px-2.5 py-1 rounded border border-border text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          >
+          <Button onClick={() => setLlmOpen(true)} variant="outline" size="sm">
             Copy for AI
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => {
               setShowFilters(v => !v);
               if (showFilters) setColumnFilters([]);
             }}
-            className={[
-              "px-2.5 py-1 rounded border text-xs font-medium transition-colors",
-              showFilters
-                ? "bg-primary text-primary-foreground border-primary"
-                : "border-border text-muted-foreground hover:text-foreground hover:bg-muted",
-            ].join(" ")}
+            variant={showFilters ? "default" : "outline"}
+            size="sm"
           >
             Filter{columnFilters.length > 0 ? ` (${columnFilters.length})` : ""}
-          </button>
+          </Button>
           <Menu.Root>
             <Menu.Trigger className="px-2.5 py-1 rounded border border-border text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
               Show/Hide Columns

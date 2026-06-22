@@ -5,6 +5,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import type { BagClub } from "@/lib/profile";
 
 const CLUB_TYPES = ["Driver", "Wood", "Hybrid", "Iron", "Wedge", "Putter"] as const;
@@ -75,25 +76,19 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Type grid */}
           <div className="grid grid-cols-3 gap-2">
             {CLUB_TYPES.map(type => (
-              <button
+              <Button
                 key={type}
                 onClick={() => selectType(type)}
-                className={[
-                  "aspect-square rounded-lg border text-sm font-medium transition-colors flex items-center justify-center",
-                  clubType === type
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "border-border hover:bg-muted",
-                ].join(" ")}
+                variant={clubType === type ? "default" : "outline"}
+                className="aspect-square h-auto py-3"
               >
                 {type}
-              </button>
+              </Button>
             ))}
           </div>
 
-          {/* Sub-options */}
           {clubType && (
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
@@ -101,24 +96,19 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {SUB_OPTIONS[clubType].map(name => (
-                  <button
+                  <Button
                     key={name}
                     onClick={() => selectSub(name)}
-                    className={[
-                      "px-3 py-1.5 rounded-md border text-sm transition-colors",
-                      label === name
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "border-border hover:bg-muted",
-                    ].join(" ")}
+                    variant={label === name ? "default" : "outline"}
+                    size="sm"
                   >
                     {name}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Make / Model */}
           <div className="space-y-1.5">
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
               Make / Model
@@ -133,19 +123,8 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
         </div>
 
         <DialogFooter>
-          <button
-            onClick={handleClose}
-            className="px-4 py-1.5 rounded text-sm border border-border hover:bg-muted"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleAdd}
-            disabled={!label.trim()}
-            className="px-4 py-1.5 rounded text-sm bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40"
-          >
-            Add
-          </button>
+          <Button onClick={handleClose} variant="outline">Cancel</Button>
+          <Button onClick={handleAdd} disabled={!label.trim()}>Add</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
