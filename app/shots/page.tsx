@@ -10,6 +10,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -98,6 +99,29 @@ const COLUMNS: ColumnDef<Shot>[] = [
   { accessorKey: "impactHorizontal",header: "Impact H",     cell: ({ row }) => fmtImpact(row.original.impactHorizontal),       meta: { statKey: "impactHorizontal" },filterFn: numericFilter },
   { accessorKey: "impactVertical",  header: "Impact V",     cell: ({ row }) => fmt(row.original.impactVertical),               meta: { statKey: "impactVertical" },  filterFn: numericFilter },
 ];
+
+const FOOTER_FMT: Partial<Record<string, (n: number) => string>> = {
+  carry:            n => fmt(n, 1),
+  total:            n => fmt(n, 1),
+  apex:             n => fmt(n, 1),
+  offline:          n => fmtDir(n),
+  ballSpeed:        n => fmt(n, 1),
+  clubSpeed:        n => fmt(n, 1),
+  smashFactor:      n => fmt(n, 2),
+  launchAngle:      n => fmt(n, 1),
+  launchDirection:  n => fmtDir(n),
+  spinRate:         n => fmt(n, 0),
+  spinAxis:         n => fmtDir(n),
+  backSpin:         n => fmt(n, 0),
+  sideSpin:         n => fmtDir(n),
+  landingAngle:     n => fmt(n, 1),
+  clubPath:         n => fmtDir(n),
+  faceAngle:        n => fmtDir(n),
+  attackAngle:      n => fmt(n, 1),
+  dynamicLoft:      n => fmt(n, 1),
+  impactHorizontal: n => fmtImpact(n),
+  impactVertical:   n => fmt(n, 1),
+};
 
 const DEFAULT_HIDDEN: VisibilityState = {
   launchDirection: false,
@@ -192,6 +216,14 @@ export default function ShotsPage() {
 
   const outlierCount = analysis.outlierIndices.size;
   const rowCount = table.getRowModel().rows.length;
+
+  function colAvg(colId: string, skipZero = false): number | null {
+    const vals = table.getRowModel().rows
+      .map(r => r.getValue(colId) as number)
+      .filter(v => v != null && !isNaN(v) && (!skipZero || v !== 0));
+    if (!vals.length) return null;
+    return vals.reduce((a, b) => a + b, 0) / vals.length;
+  }
 
   function buildMarkdown(): string {
     const visibleCols = table.getVisibleLeafColumns();
@@ -402,6 +434,26 @@ export default function ShotsPage() {
                 );
               })}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                {table.getVisibleLeafColumns().map(col => {
+                  if (col.id === "club") return (
+                    <TableCell key={col.id} className="text-xs font-medium text-muted-foreground py-2">
+                      Avg
+                    </TableCell>
+                  );
+                  if (col.id === "index") return <TableCell key={col.id} />;
+                  const skipZero = col.id === "clubSpeed" || col.id === "smashFactor";
+                  const avg = colAvg(col.id, skipZero);
+                  const formatter = FOOTER_FMT[col.id];
+                  return (
+                    <TableCell key={col.id} className="tabular-nums whitespace-nowrap text-sm py-2">
+                      {avg != null && formatter ? formatter(avg) : ""}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            </TableFooter>
           </Table>
         </div>
       </main>
