@@ -230,7 +230,7 @@ export default function ShotPage() {
 
   function copyForAI() {
     const flags = [...(isOutlier ? ["outlier"] : []), ...(isPoorContact ? ["poor contact"] : [])];
-    const text = buildCopyText(shot, groups, analysis.meta, flags);
+    const text = buildCopyText(shot, groups, analysis!.meta, flags);
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
