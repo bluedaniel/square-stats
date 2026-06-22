@@ -2,6 +2,14 @@
 
 A local desktop app for analysing Square Omni launch monitor sessions. Drop in a CSV export and get shot dispersion, distance histograms, spin charts, trend lines, and a per-shot breakdown with club face diagrams — all offline, no account required.
 
+## Screenshots
+
+![Dashboard](screenshots/dashboard.png)
+
+![Single shot](screenshots/single-shot.png)
+
+![All shots](screenshots/all-shots.png)
+
 ## What it does
 
 - **Session dashboard** — overview of dispersion, carry distribution, ball speed trend, and smash/spin scatter for any club or the full session

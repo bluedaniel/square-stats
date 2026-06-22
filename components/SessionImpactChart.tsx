@@ -14,15 +14,16 @@ interface FaceConfig {
   cy: number;
   scaleX: number;
   scaleY: number;
+  sweetSpotV: number;
 }
 
 const FACE_CONFIGS: Record<string, FaceConfig> = {
-  driver:  { image: "Driver_Front.png",        cx: 0.508, cy: 0.185, scaleX: 0.0075, scaleY: 0.0083 },
-  "3wood": { image: "3Wood_Front.png",         cx: 0.527, cy: 0.298, scaleX: 0.0099, scaleY: 0.0069 },
-  "4iron": { image: "4Iron_Front.png",         cx: 0.459, cy: 0.200, scaleX: 0.0132, scaleY: 0.0165 },
-  "7iron": { image: "7Iron_Front.png",         cx: 0.439, cy: 0.227, scaleX: 0.0140, scaleY: 0.0161 },
-  "9iron": { image: "9Iron_Front.png",         cx: 0.450, cy: 0.263, scaleX: 0.0145, scaleY: 0.0155 },
-  pw:      { image: "PitchingWedge_Front.png", cx: 0.422, cy: 0.265, scaleX: 0.0156, scaleY: 0.0158 },
+  driver:  { image: "Driver_Front.png",        cx: 0.508, cy: 0.185, scaleX: 0.0075, scaleY: 0.0083, sweetSpotV: -22 },
+  "3wood": { image: "3Wood_Front.png",         cx: 0.527, cy: 0.298, scaleX: 0.0099, scaleY: 0.0069, sweetSpotV: -18 },
+  "4iron": { image: "4Iron_Front.png",         cx: 0.459, cy: 0.200, scaleX: 0.0132, scaleY: 0.0165, sweetSpotV: -15 },
+  "7iron": { image: "7Iron_Front.png",         cx: 0.439, cy: 0.227, scaleX: 0.0140, scaleY: 0.0161, sweetSpotV: -15 },
+  "9iron": { image: "9Iron_Front.png",         cx: 0.450, cy: 0.263, scaleX: 0.0145, scaleY: 0.0155, sweetSpotV: -14 },
+  pw:      { image: "PitchingWedge_Front.png", cx: 0.422, cy: 0.265, scaleX: 0.0156, scaleY: 0.0158, sweetSpotV: -14 },
 };
 
 function getConfig(club: string): FaceConfig {
@@ -37,10 +38,10 @@ function getConfig(club: string): FaceConfig {
   return FACE_CONFIGS["driver"];
 }
 
-function impactColor(h: number, v: number): string {
-  const dist = Math.sqrt(h * h + v * v);
-  if (dist < 8)  return "#22c55e";
-  if (dist < 16) return "#eab308";
+function impactColor(h: number, v: number, sweetSpotV: number): string {
+  const dist = Math.sqrt(h * h + (v - sweetSpotV) ** 2);
+  if (dist < 15) return "#22c55e";
+  if (dist < 25) return "#eab308";
   return "#ef4444";
 }
 
@@ -86,7 +87,7 @@ export function SessionImpactChart({ shots, club }: Props) {
           {displayShots.map((s, i) => {
             const left = Math.max(5, Math.min(95, (cfg.cx - s.impactHorizontal * cfg.scaleX) * 100));
             const top  = Math.max(5, Math.min(95, (cfg.cy - s.impactVertical   * cfg.scaleY) * 100));
-            const color = impactColor(s.impactHorizontal, s.impactVertical);
+            const color = impactColor(s.impactHorizontal, s.impactVertical, cfg.sweetSpotV);
             return (
               <div key={i} style={{
                 position: "absolute",
