@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { NavBar } from "@/components/NavBar";
 import {
   Table,
   TableBody,
@@ -133,25 +134,35 @@ export default function ShotsPage() {
 
   const outlierCount = analysis.outlierIndices.size;
 
+  const highlightButton = profile.bag.length > 0 ? (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-muted-foreground">Highlight ideals:</span>
+      <button onClick={cycleHighlight} className={[
+        "px-2.5 py-1 rounded border text-xs font-medium",
+        highlightMode === "positive" ? "bg-green-500 text-white border-green-500" :
+        highlightMode === "negative" ? "bg-red-500 text-white border-red-500" :
+        highlightMode === "both"     ? "bg-primary text-primary-foreground border-primary" :
+        "text-muted-foreground border-border",
+      ].join(" ")}>
+        {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
+      </button>
+    </div>
+  ) : null;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b px-6 py-4 flex items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">← Dashboard</Link>
-            <h1 className="text-xl font-bold">All Shots</h1>
-            <Link href="/profile" className="text-xs text-muted-foreground hover:text-foreground underline">Profile</Link>
-          </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {analysis.meta.date && `${analysis.meta.date}`}
-            {analysis.meta.place && ` · ${analysis.meta.place}`}
-            {" · "}
-            <span className="italic">{filename}</span>
-            {" · "}
-            {rows.length} shot{rows.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 items-center">
+      <NavBar right={highlightButton} />
+
+      <div className="border-b px-6 py-2 flex items-center justify-between gap-4">
+        <p className="text-xs text-muted-foreground shrink-0">
+          {analysis.meta.date}
+          {analysis.meta.place && ` · ${analysis.meta.place}`}
+          {" · "}
+          <span className="italic">{filename}</span>
+          {" · "}
+          {rows.length} shot{rows.length !== 1 ? "s" : ""}
+        </p>
+        <div className="flex flex-wrap gap-1.5 items-center justify-end">
           {clubs.map(club => (
             <Badge
               key={club}
@@ -162,7 +173,7 @@ export default function ShotsPage() {
               {club}
             </Badge>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-4 bg-border mx-0.5" />
           <Badge
             variant={hideOutliers ? "default" : "outline"}
             className="cursor-pointer select-none"
@@ -170,23 +181,8 @@ export default function ShotsPage() {
           >
             {hideOutliers ? `Outliers hidden (${outlierCount})` : `Hide outliers (${outlierCount})`}
           </Badge>
-          {profile.bag.length > 0 && (
-            <>
-              <div className="w-px h-5 bg-border mx-1" />
-              <span className="text-xs text-muted-foreground">Highlight ideals:</span>
-              <button onClick={cycleHighlight} className={[
-                "px-3 py-1 rounded border text-xs font-medium",
-                highlightMode === "positive" ? "bg-green-500 text-white border-green-500" :
-                highlightMode === "negative" ? "bg-red-500 text-white border-red-500" :
-                highlightMode === "both"     ? "bg-primary text-primary-foreground border-primary" :
-                "text-muted-foreground border-border",
-              ].join(" ")}>
-                {highlightMode === "off" ? "Off" : highlightMode === "positive" ? "Positive" : highlightMode === "negative" ? "Negative" : "Both"}
-              </button>
-            </>
-          )}
         </div>
-      </header>
+      </div>
 
       <main className="p-6">
         <div className="rounded-md border overflow-x-auto">

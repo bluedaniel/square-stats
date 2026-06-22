@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { NavBar } from "@/components/NavBar";
 import { StatsCards } from "@/components/StatsCards";
 import { DispersionChart } from "@/components/DispersionChart";
 import { DistanceHistogram } from "@/components/DistanceHistogram";
@@ -29,7 +29,6 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
     localStorage.setItem("hideOutliers", String(hideOutliers));
   }, [hideOutliers]);
 
-  // Shots visible after outlier filter (preserves original array indices for poorContactShots)
   const visibleShots = useMemo(
     () =>
       hideOutliers
@@ -38,7 +37,6 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
     [hideOutliers, analysis]
   );
 
-  // Then apply club filter
   const filteredShots = useMemo(
     () =>
       selectedClub === "All"
@@ -47,7 +45,6 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
     [selectedClub, visibleShots]
   );
 
-  // Recompute per-club stats from currently visible shots
   const visibleClubStats = useMemo(
     () => recomputeClubStats(visibleShots),
     [visibleShots]
@@ -57,17 +54,25 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b px-6 py-4 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold">Square Stats</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {analysis.meta.date && `${analysis.meta.date}`}
-            {analysis.meta.place && ` · ${analysis.meta.place}`}
-            {" · "}
-            <span className="italic">{filename}</span>
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 items-center">
+      <NavBar
+        right={
+          <button
+            onClick={onReset}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Load new file
+          </button>
+        }
+      />
+
+      <div className="border-b px-6 py-2 flex items-center justify-between gap-4">
+        <p className="text-xs text-muted-foreground shrink-0">
+          {analysis.meta.date}
+          {analysis.meta.place && ` · ${analysis.meta.place}`}
+          {" · "}
+          <span className="italic">{filename}</span>
+        </p>
+        <div className="flex flex-wrap gap-1.5 items-center justify-end">
           {clubs.map((club) => (
             <Badge
               key={club}
@@ -78,36 +83,16 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
               {club}
             </Badge>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-4 bg-border mx-0.5" />
           <Badge
             variant={hideOutliers ? "default" : "outline"}
             className="cursor-pointer select-none"
             onClick={() => setHideOutliers((v) => !v)}
           >
-            {hideOutliers
-              ? `Outliers hidden (${outlierCount})`
-              : `Hide outliers (${outlierCount})`}
+            {hideOutliers ? `Outliers hidden (${outlierCount})` : `Hide outliers (${outlierCount})`}
           </Badge>
-          <Link
-            href="/shots"
-            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
-          >
-            All shots
-          </Link>
-          <Link
-            href="/profile"
-            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
-          >
-            Profile
-          </Link>
-          <button
-            onClick={onReset}
-            className="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
-          >
-            Load another
-          </button>
         </div>
-      </header>
+      </div>
 
       <main className="p-6 space-y-6">
         <StatsCards shots={filteredShots} />

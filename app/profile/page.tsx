@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { NavBar } from "@/components/NavBar";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -65,12 +65,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b px-6 py-4 flex items-center gap-4">
-        <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
-          ← Dashboard
-        </Link>
-        <h1 className="text-xl font-bold">Profile</h1>
-      </header>
+      <NavBar />
 
       <main className="p-6 max-w-xl mx-auto space-y-8">
         {/* Handicap */}

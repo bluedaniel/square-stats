@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { NavBar } from "@/components/NavBar";
 import { ImpactChart } from "@/components/ImpactChart";
 import { LoftDiagram } from "@/components/LoftDiagram";
 import { FaceToPath } from "@/components/FaceToPath";
@@ -198,37 +199,19 @@ export default function ShotPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/shots"
-            className="text-muted-foreground hover:text-foreground text-sm"
-          >
-            ← All shots
-          </Link>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold">
-                {shot.club} · Shot #{shot.index}
-              </h1>
-              {isOutlier && (
-                <Badge variant="outline" className="text-xs">
-                  Outlier
-                </Badge>
-              )}
-              {isPoorContact && !isOutlier && (
-                <Badge variant="outline" className="text-xs">
-                  Poor contact
-                </Badge>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {analysis.meta.date && analysis.meta.date}
-              {analysis.meta.place && ` · ${analysis.meta.place}`}
-            </p>
-          </div>
-        </div>
-      </header>
+      <NavBar />
+
+      <div className="border-b px-6 py-2 flex items-center gap-3">
+        <h1 className="text-sm font-semibold">
+          {shot.club} · Shot #{shot.index}
+        </h1>
+        {isOutlier && <Badge variant="outline" className="text-xs">Outlier</Badge>}
+        {isPoorContact && !isOutlier && <Badge variant="outline" className="text-xs">Poor contact</Badge>}
+        <span className="text-xs text-muted-foreground">
+          {analysis.meta.date}
+          {analysis.meta.place && ` · ${analysis.meta.place}`}
+        </span>
+      </div>
 
       <main className="p-6">
         <div className="grid gap-4 lg:gap-6 xl:gap-8 items-start grid-cols-1 lg:grid-cols-[260px_minmax(0,480px)] xl:grid-cols-[260px_minmax(0,480px)_220px] mx-auto w-fit">
