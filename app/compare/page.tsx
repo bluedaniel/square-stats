@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { NavBar } from "@/components/NavBar";
 import { ClubSelector } from "@/components/ClubSelector";
+import { CopyForAIButton } from "@/components/CopyForAIButton";
 import { CLUB_COLORS } from "@/components/FairwayView";
 import { useSession } from "@/contexts/SessionContext";
 import type { Session } from "@/contexts/SessionContext";
@@ -75,6 +76,26 @@ const CHART_METRICS = [
 ] as const;
 
 type ChartMetricKey = typeof CHART_METRICS[number]["key"];
+
+function buildCompareAIText(sessions: Session[], commonClubs: string[]): string {
+  const lines: string[] = ["Session comparison", ""];
+  for (const s of sessions) {
+    lines.push(`Session: ${s.filename} (${s.analysis.meta.date}${s.analysis.meta.place ? ` · ${s.analysis.meta.place}` : ""})`);
+  }
+  lines.push("", "Per-club averages (carry yd / ball speed mph / spin rpm / smash / offline yd)");
+  const header = ["Club", ...sessions.map(s => s.filename.replace(/\.csv$/i, ""))].join("\t");
+  lines.push(header);
+  for (const club of commonClubs) {
+    const cols = sessions.map(s => {
+      const st = s.analysis.clubStats.find(c => c.club === club);
+      if (!st) return "—";
+      const off = st.avgOffline === 0 ? "0.0" : `${st.avgOffline > 0 ? "R" : "L"}${Math.abs(st.avgOffline).toFixed(1)}`;
+      return `${Math.round(st.avgCarry)} / ${st.avgBallSpeed > 0 ? st.avgBallSpeed.toFixed(0) : "—"} / ${st.avgSpinRate > 0 ? Math.round(st.avgSpinRate) : "—"} / ${st.avgSmash > 0 ? st.avgSmash.toFixed(2) : "—"} / ${off}`;
+    });
+    lines.push([club, ...cols].join("\t"));
+  }
+  return lines.join("\n");
+}
 
 function CompareContent({ sessions }: { sessions: Session[] }) {
   const [selectedClub, setSelectedClub] = useState("All");
@@ -149,7 +170,13 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
 
   return (
     <div className="space-y-8">
-      <ClubSelector clubs={selectorClubs} selected={selectedClub} onChange={setSelectedClub} />
+      <div className="flex items-center justify-between gap-4">
+        <ClubSelector clubs={selectorClubs} selected={selectedClub} onChange={setSelectedClub} />
+        <CopyForAIButton
+          getText={() => buildCompareAIText(sessions, commonClubs)}
+          className="shrink-0 text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"
+        />
+      </div>
 
       {/* Overview */}
       <section>

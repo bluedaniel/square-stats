@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useSession } from "@/contexts/SessionContext";
 import { useLoadSession } from "@/hooks/useLoadSession";
+import { LayoutGrid, ChevronDown, X, Plus } from "lucide-react";
 
 export function SessionSwitcher() {
   const { sessions, activeId, setActiveId, removeSession } = useSession();
@@ -42,10 +43,7 @@ export function SessionSwitcher() {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs border border-border bg-muted/40 hover:bg-muted transition-colors max-w-[180px]"
       >
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0 text-muted-foreground">
-          <rect x="1" y="1" width="4" height="4" rx="0.75"/><rect x="7" y="1" width="4" height="4" rx="0.75"/>
-          <rect x="1" y="7" width="4" height="4" rx="0.75"/><rect x="7" y="7" width="4" height="4" rx="0.75"/>
-        </svg>
+        <LayoutGrid size={11} className="shrink-0 text-muted-foreground" />
         <span className="truncate font-medium">
           {active ? active.filename.replace(/\.csv$/i, "") : "Sessions"}
         </span>
@@ -54,9 +52,7 @@ export function SessionSwitcher() {
             {sessions.indexOf(active!) + 1}/{sessions.length}
           </span>
         )}
-        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 text-muted-foreground">
-          <path d="M2 4l4 4 4-4"/>
-        </svg>
+        <ChevronDown size={10} className="shrink-0 text-muted-foreground" />
       </button>
 
       {open && (
@@ -83,9 +79,7 @@ export function SessionSwitcher() {
                   className="shrink-0 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/20 hover:text-destructive transition-all"
                   aria-label="Remove"
                 >
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M2 2l8 8M10 2l-8 8"/>
-                  </svg>
+                  <X size={11} />
                 </button>
               </div>
             ))}
@@ -96,9 +90,7 @@ export function SessionSwitcher() {
               onClick={() => inputRef.current?.click()}
               className="flex items-center gap-2 w-full px-2.5 py-2 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M6 1v10M1 6h10"/>
-              </svg>
+              <Plus size={12} />
               Add session
             </button>
           </div>

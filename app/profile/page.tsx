@@ -20,6 +20,7 @@ import { ClubIdealsModal } from "@/components/ClubIdealsModal";
 import { DefaultIdealsModal } from "@/components/DefaultIdealsModal";
 import { loadProfile, saveProfile, csvToLabel, HANDICAP_OPTIONS, type UserProfile, type BagClub, type ClubStatKey, type IdealRange } from "@/lib/profile";
 import { ExternalLink } from "@/components/ExternalLink";
+import { GripVertical } from "lucide-react";
 
 function BagList({ bag, onDragEnd, onEdit, onRemove }: {
   bag: BagClub[];
@@ -62,11 +63,7 @@ function SortableClubRow({ club, onEdit, onRemove }: {
         className="mr-3 text-muted-foreground/40 hover:text-muted-foreground cursor-grab active:cursor-grabbing touch-none"
         aria-label="Drag to reorder"
       >
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="currentColor">
-          <circle cx="4" cy="2.5" r="1.2"/><circle cx="9" cy="2.5" r="1.2"/>
-          <circle cx="4" cy="6.5" r="1.2"/><circle cx="9" cy="6.5" r="1.2"/>
-          <circle cx="4" cy="10.5" r="1.2"/><circle cx="9" cy="10.5" r="1.2"/>
-        </svg>
+        <GripVertical size={13} />
       </button>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium">{club.label}</p>

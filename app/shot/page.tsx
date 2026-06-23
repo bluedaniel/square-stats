@@ -15,6 +15,7 @@ import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub }
 import { IdealsViewModal } from "@/components/IdealsViewModal";
 import { Button } from "@/components/ui/button";
 import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
+import { CopyForAIButton } from "@/components/CopyForAIButton";
 import type { Shot } from "@/types/shot";
 
 function fmtDir(n: number): string {
@@ -188,7 +189,6 @@ export default function ShotPage() {
   );
   const [profile] = useState(() => loadProfile());
   const [idealsViewOpen, setIdealsViewOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   function cycleHighlight() {
     const next = HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
@@ -228,14 +228,6 @@ export default function ShotPage() {
   const bagClub = findBagClub(shot.club, profile.bag);
   const groups = buildGroups(shot, bagClub);
 
-  function copyForAI() {
-    const flags = [...(isOutlier ? ["outlier"] : []), ...(isPoorContact ? ["poor contact"] : [])];
-    const text = buildCopyText(shot, groups, analysis!.meta, flags);
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -267,12 +259,13 @@ export default function ShotPage() {
           {analysis.meta.date}
           {analysis.meta.place && ` · ${analysis.meta.place}`}
         </span>
-        <button
-          onClick={copyForAI}
+        <CopyForAIButton
           className="ml-auto text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"
-        >
-          {copied ? "Copied!" : "Copy for AI"}
-        </button>
+          getText={() => {
+            const flags = [...(isOutlier ? ["outlier"] : []), ...(isPoorContact ? ["poor contact"] : [])];
+            return buildCopyText(shot, groups, analysis!.meta, flags);
+          }}
+        />
       </div>
 
       <main className="p-6">

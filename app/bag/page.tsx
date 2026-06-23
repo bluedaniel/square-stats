@@ -5,6 +5,7 @@ import { useSession } from "@/contexts/SessionContext";
 import { NavBar } from "@/components/NavBar";
 import type { SessionAnalysis, ClubStats } from "@/types/shot";
 import { FairwayView, CLUB_COLORS } from "@/components/FairwayView";
+import { CopyForAIButton } from "@/components/CopyForAIButton";
 
 function gapColor(gap: number) {
   if (gap < 8)  return "text-orange-500";
@@ -42,17 +43,10 @@ function buildAIText(clubs: ClubStats[]): string {
 export default function BagPage() {
   const { analysis } = useSession();
   const [view, setView] = useState<View>("map");
-  const [copied, setCopied] = useState(false);
 
   const clubs = analysis
     ? [...analysis.clubStats].filter(c => c.avgCarry > 0 && c.count >= 2).sort((a, b) => b.avgCarry - a.avgCarry)
     : [];
-
-  function copyToAI() {
-    navigator.clipboard.writeText(buildAIText(clubs));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -67,12 +61,10 @@ export default function BagPage() {
           </div>
           <div className="flex items-center gap-3">
             {analysis && (
-              <button
-                onClick={copyToAI}
+              <CopyForAIButton
+                getText={() => buildAIText(clubs)}
                 className="text-sm px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              >
-                {copied ? "Copied!" : "Copy to AI"}
-              </button>
+              />
             )}
             <div className="flex rounded-lg border border-border overflow-hidden text-sm">
               {(["map", "table", "ladder"] as View[]).map(v => (
