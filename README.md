@@ -2,6 +2,10 @@
 
 A local desktop app for analysing Square Omni launch monitor sessions. Drop in a CSV export and get shot dispersion, distance histograms, spin charts, trend lines, and a per-shot breakdown with club face diagrams — all offline, no account required.
 
+**[Download the latest release](https://github.com/bluedaniel/square-stats/releases/)** — macOS and Windows.
+
+> **macOS:** right-click the app → Open on first launch to bypass Gatekeeper (the app is unsigned).
+
 ## Screenshots
 
 ![Dashboard](screenshots/dashboard.png)
@@ -15,6 +19,7 @@ A local desktop app for analysing Square Omni launch monitor sessions. Drop in a
 - **Session dashboard** — overview of dispersion, carry distribution, ball speed trend, and smash/spin scatter for any club or the full session
 - **All shots table** — filterable, sortable shot log with outlier detection and poor-contact flagging
 - **Shot detail** — per-shot stats (distance, speed, launch, spin, club data) with face-to-path diagram, loft diagram, and impact location overlay
+- **Bag gapping** — distance ladder across your bag: progress bars, sortable stats table, and a horizontal carry ladder with ±1 std dev capsules showing consistency per club; overlaid on a top-down fairway photo with yardage markers and per-shot scatter
 - **Club ideals** — set ideal ranges per club; stats highlight green/amber/red against your benchmarks
 - **Dark mode** — full light/dark theme
 
