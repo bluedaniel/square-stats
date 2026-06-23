@@ -19,9 +19,40 @@ function gapLabel(gap: number) {
 
 type View = "map" | "table" | "ladder";
 
+function buildAIText(clubs: ClubStats[]): string {
+  const header = ["Club", "Shots", "Avg Carry", "±StdDev", "Avg Total", "Ball Speed", "Spin Rate", "Smash"]
+    .join("\t");
+  const rows = clubs.map((c, i) => {
+    const prev = clubs[i - 1];
+    const gap  = prev ? ` (gap from ${prev.club}: ${Math.round(prev.avgCarry - c.avgCarry)} yd)` : "";
+    return [
+      c.club + gap,
+      c.count,
+      `${Math.round(c.avgCarry)} yd`,
+      `±${c.stdDevCarry.toFixed(1)} yd`,
+      c.avgTotal > 0 ? `${Math.round(c.avgTotal)} yd` : "—",
+      c.avgBallSpeed > 0 ? `${c.avgBallSpeed.toFixed(0)} mph` : "—",
+      c.avgSpinRate > 0 ? `${Math.round(c.avgSpinRate)} rpm` : "—",
+      c.avgSmash > 0 ? c.avgSmash.toFixed(2) : "—",
+    ].join("\t");
+  });
+  return `Bag Gapping Session\n\n${header}\n${rows.join("\n")}`;
+}
+
 export default function BagPage() {
   const { analysis } = useSession();
   const [view, setView] = useState<View>("map");
+  const [copied, setCopied] = useState(false);
+
+  const clubs = analysis
+    ? [...analysis.clubStats].filter(c => c.avgCarry > 0 && c.count >= 2).sort((a, b) => b.avgCarry - a.avgCarry)
+    : [];
+
+  function copyToAI() {
+    navigator.clipboard.writeText(buildAIText(clubs));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -34,21 +65,31 @@ export default function BagPage() {
               Average carry distances and gaps across your clubs.
             </p>
           </div>
-          <div className="flex rounded-lg border border-border overflow-hidden text-sm">
-            {(["map", "table", "ladder"] as View[]).map(v => (
+          <div className="flex items-center gap-3">
+            {analysis && (
               <button
-                key={v}
-                onClick={() => setView(v)}
-                className={[
-                  "px-4 py-1.5 capitalize transition-colors",
-                  view === v
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                ].join(" ")}
+                onClick={copyToAI}
+                className="text-sm px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                {v}
+                {copied ? "Copied!" : "Copy to AI"}
               </button>
-            ))}
+            )}
+            <div className="flex rounded-lg border border-border overflow-hidden text-sm">
+              {(["map", "table", "ladder"] as View[]).map(v => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={[
+                    "px-4 py-1.5 capitalize transition-colors",
+                    view === v
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                  ].join(" ")}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
