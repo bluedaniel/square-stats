@@ -56,9 +56,9 @@ function GappingLayout({ analysis }: { analysis: SessionAnalysis }) {
   const maxCarry = clubs[0].avgCarry;
 
   return (
-    <div className="flex gap-8 items-start">
+    <div className="flex flex-col lg:flex-row gap-8 items-start">
       {/* Club list */}
-      <div className="flex-1 min-w-0 space-y-1">
+      <div className="flex-1 min-w-0 w-full space-y-1">
         {clubs.map((club, i) => {
           const prev   = clubs[i - 1];
           const gap    = prev ? Math.round(prev.avgCarry - club.avgCarry) : null;
@@ -95,7 +95,7 @@ function GappingLayout({ analysis }: { analysis: SessionAnalysis }) {
                 </div>
 
                 {/* Secondary metrics */}
-                <div className="hidden md:flex items-center gap-3 text-xs text-muted-foreground tabular-nums shrink-0 w-44">
+                <div className="hidden sm:flex items-center gap-3 text-xs text-muted-foreground tabular-nums shrink-0 w-44">
                   <span title="Carry std dev">±{club.stdDevCarry.toFixed(1)} yd</span>
                   <span>{club.avgBallSpeed > 0 ? `${club.avgBallSpeed.toFixed(0)} mph` : "—"}</span>
                   <span>{club.avgSpinRate > 0 ? `${Math.round(club.avgSpinRate)} rpm` : "—"}</span>
@@ -114,7 +114,7 @@ function GappingLayout({ analysis }: { analysis: SessionAnalysis }) {
       </div>
 
       {/* Fairway visualization */}
-      <div className="shrink-0 w-96">
+      <div className="w-full lg:w-96 lg:shrink-0">
         <FairwayView analysis={analysis} clubs={clubs} />
       </div>
     </div>
