@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Square Stats",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "identifier": "com.squarestats.desktop",
   "build": {
     "frontendDist": "../out",
