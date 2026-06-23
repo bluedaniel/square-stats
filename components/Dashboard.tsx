@@ -13,16 +13,14 @@ import { SessionLoftDiagram } from "@/components/SessionLoftDiagram";
 import { StatsTable } from "@/components/StatsTable";
 import { recomputeClubStats } from "@/utils/analyze";
 import { SessionMeta } from "@/components/SessionMeta";
-import { Button } from "@/components/ui/button";
 import type { SessionAnalysis } from "@/types/shot";
 
 interface Props {
   analysis: SessionAnalysis;
   filename: string;
-  onReset: () => void;
 }
 
-export function Dashboard({ analysis, filename, onReset }: Props) {
+export function Dashboard({ analysis, filename }: Props) {
   const clubs = ["All", ...new Set(analysis.shots.map((s) => s.club))];
   const [selectedClub, setSelectedClub] = useState("All");
   const [hideOutliers, setHideOutliers] = useState(() =>
@@ -58,14 +56,7 @@ export function Dashboard({ analysis, filename, onReset }: Props) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <NavBar
-        right={
-          <Button onClick={onReset} variant="outline" size="sm">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            Load new file
-          </Button>
-        }
-      />
+      <NavBar />
 
       <div className="border-b px-6 py-2">
         <SessionMeta

@@ -18,6 +18,10 @@ export function CSVDropzone({ onFile }: Props) {
     reader.readAsText(file);
   };
 
+  const readFiles = (files: FileList | File[]) => {
+    Array.from(files).forEach(readFile);
+  };
+
   useEffect(() => {
     if (!isTauri) return;
 
@@ -33,13 +37,14 @@ export function CSVDropzone({ onFile }: Props) {
       unlistenLeave = await listen("tauri://drag-leave", () => setDragging(false));
       unlisten = await listen<{ paths: string[] }>("tauri://drag-drop", async (event) => {
         setDragging(false);
-        const path = event.payload.paths?.[0];
-        if (!path) return;
-        try {
-          const text = await invoke<string>("read_file", { path });
-          onFile(text, path.split("/").pop() ?? path);
-        } catch (e) {
-          console.error("Failed to read dropped file:", e);
+        const paths = event.payload.paths ?? [];
+        for (const path of paths) {
+          try {
+            const text = await invoke<string>("read_file", { path });
+            onFile(text, path.split("/").pop() ?? path);
+          } catch (e) {
+            console.error("Failed to read dropped file:", e);
+          }
         }
       });
     })();
@@ -55,8 +60,7 @@ export function CSVDropzone({ onFile }: Props) {
     (e: React.DragEvent) => {
       e.preventDefault();
       setDragging(false);
-      const file = e.dataTransfer.files[0];
-      if (file) readFile(file);
+      if (e.dataTransfer.files.length) readFiles(e.dataTransfer.files);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -76,18 +80,18 @@ export function CSVDropzone({ onFile }: Props) {
         <div className="flex flex-col items-center gap-4 p-12 text-center select-none">
           <div className="text-5xl">⛳</div>
           <div>
-            <p className="text-xl font-semibold">Drop your Square Omni CSV here</p>
-            <p className="text-sm text-muted-foreground mt-1">or click to browse</p>
+            <p className="text-xl font-semibold">Drop your Square Omni CSV files here</p>
+            <p className="text-sm text-muted-foreground mt-1">or click to browse · multiple files supported</p>
           </div>
         </div>
         <input
           id="csv-input"
           type="file"
           accept=".csv"
+          multiple
           className="hidden"
           onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) readFile(file);
+            if (e.target.files?.length) readFiles(e.target.files);
           }}
         />
       </Card>

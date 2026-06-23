@@ -3,33 +3,26 @@
 import { useState } from "react";
 import { CSVDropzone } from "@/components/CSVDropzone";
 import { Dashboard } from "@/components/Dashboard";
-import { parseSquareOmniCSV } from "@/utils/parseCSV";
-import { analyze } from "@/utils/analyze";
 import { useSession } from "@/contexts/SessionContext";
+import { useLoadSession } from "@/hooks/useLoadSession";
 
 export default function Home() {
-  const { analysis, filename, setAnalysis, setFilename } = useSession();
+  const { analysis, filename, sessions, removeSession, activeId } = useSession();
+  const { loadFile } = useLoadSession();
   const [error, setError] = useState<string | null>(null);
 
   function handleFile(text: string, name: string) {
     try {
       setError(null);
-      const { meta, shots } = parseSquareOmniCSV(text);
-      if (!shots.length) throw new Error("No shots found in CSV");
-      setAnalysis(analyze(meta, shots));
-      setFilename(name);
+      loadFile(text, name);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to parse CSV");
     }
   }
 
-  if (analysis) {
+  if (sessions.length > 0 && analysis) {
     return (
-      <Dashboard
-        analysis={analysis}
-        filename={filename}
-        onReset={() => { setAnalysis(null); setFilename(""); }}
-      />
+      <Dashboard analysis={analysis} filename={filename} />
     );
   }
 
