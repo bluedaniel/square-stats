@@ -29,6 +29,7 @@ import {
 } from "@tanstack/react-table";
 import { Menu } from "@base-ui/react/menu";
 import { useSession } from "@/contexts/SessionContext";
+import { ClubSelector } from "@/components/ClubSelector";
 import { loadProfile, findBagClub, profileStatStatus, type ClubStatKey } from "@/lib/profile";
 import { SessionMeta } from "@/components/SessionMeta";
 import { Button } from "@/components/ui/button";
@@ -277,22 +278,7 @@ export default function ShotsPage() {
       </div>
 
       <main className="p-6 space-y-3">
-        <div className="flex items-center bg-muted rounded-lg p-0.5 gap-0.5 overflow-x-auto w-fit mx-auto">
-          {clubs.map(club => (
-            <button
-              key={club}
-              onClick={() => setSelectedClub(club)}
-              className={[
-                "px-2.5 py-1 text-xs rounded-md whitespace-nowrap transition-colors select-none",
-                club === selectedClub
-                  ? "bg-background shadow-sm text-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground",
-              ].join(" ")}
-            >
-              {club}
-            </button>
-          ))}
-        </div>
+        <ClubSelector clubs={clubs} selected={selectedClub} onChange={setSelectedClub} />
 
         <div className="flex items-center justify-between gap-2">
           <div>{highlightButton}</div>

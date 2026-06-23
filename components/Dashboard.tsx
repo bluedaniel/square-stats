@@ -13,6 +13,7 @@ import { SessionLoftDiagram } from "@/components/SessionLoftDiagram";
 import { StatsTable } from "@/components/StatsTable";
 import { recomputeClubStats } from "@/utils/analyze";
 import { SessionMeta } from "@/components/SessionMeta";
+import { ClubSelector } from "@/components/ClubSelector";
 import type { SessionAnalysis } from "@/types/shot";
 
 interface Props {
@@ -69,22 +70,7 @@ export function Dashboard({ analysis, filename }: Props) {
       </div>
 
       <main className="p-6 space-y-6">
-        <div className="flex items-center bg-muted rounded-lg p-0.5 gap-0.5 overflow-x-auto w-fit mx-auto">
-          {clubs.map((club) => (
-            <button
-              key={club}
-              onClick={() => setSelectedClub(club)}
-              className={[
-                "px-2.5 py-1 text-xs rounded-md whitespace-nowrap transition-colors select-none",
-                club === selectedClub
-                  ? "bg-background shadow-sm text-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground",
-              ].join(" ")}
-            >
-              {club}
-            </button>
-          ))}
-        </div>
+        <ClubSelector clubs={clubs} selected={selectedClub} onChange={setSelectedClub} />
 
         <StatsCards shots={filteredShots} />
 

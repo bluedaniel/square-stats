@@ -15,6 +15,7 @@ export function NavBar({ right }: Props) {
   function isActive(href: string) {
     if (href === "/shots") return pathname === "/shots" || pathname === "/shot";
     if (href === "/bag") return pathname === "/bag";
+    if (href === "/compare") return pathname === "/compare";
     return pathname === href;
   }
 
@@ -22,6 +23,7 @@ export function NavBar({ right }: Props) {
     { href: "/", label: "Dashboard" },
     { href: "/shots", label: "All Shots" },
     { href: "/bag", label: "Bag Gapping" },
+    { href: "/compare", label: "Compare" },
     { href: "/profile", label: "Settings" },
   ];
 
