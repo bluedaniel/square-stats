@@ -8,16 +8,15 @@ A local desktop app for analysing Square Omni launch monitor sessions. Drop in o
 
 ## Screenshots
 
+![Dashboard](screenshots/dashboard.jpeg)
+
 <table>
   <tr>
-    <td align="center"><img src="screenshots/dashboard.jpeg" width="380"/><br/><sub>Dashboard</sub></td>
     <td align="center"><img src="screenshots/single-shot.jpeg" width="380"/><br/><sub>Shot detail</sub></td>
-  </tr>
-  <tr>
     <td align="center"><img src="screenshots/all-shots.jpeg" width="380"/><br/><sub>All shots</sub></td>
-    <td align="center"><img src="screenshots/bag-gapping.jpeg" width="380"/><br/><sub>Bag gapping</sub></td>
   </tr>
   <tr>
+    <td align="center"><img src="screenshots/bag-gapping.jpeg" width="380"/><br/><sub>Bag gapping</sub></td>
     <td align="center"><img src="screenshots/compare-sessions.jpeg" width="380"/><br/><sub>Compare sessions</sub></td>
   </tr>
 </table>
