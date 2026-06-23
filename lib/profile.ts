@@ -40,6 +40,7 @@ export interface BagClub {
   makeModel: string;
   targetCarry: number | null;
   ideals: Partial<Record<ClubStatKey, IdealRange>>;
+  aliases?: string[]; // explicit CSV club names that map to this club
 }
 
 export const HANDICAP_OPTIONS = [
@@ -125,7 +126,10 @@ function normClub(s: string): string {
 
 export function findBagClub(shotClub: string, bag: BagClub[]): BagClub | undefined {
   const key = normClub(shotClub);
-  return bag.find(c => normClub(c.label) === key);
+  return (
+    bag.find(c => c.aliases?.some(a => normClub(a) === key)) ??
+    bag.find(c => normClub(c.label) === key)
+  );
 }
 
 export function csvToLabel(club: string): string {

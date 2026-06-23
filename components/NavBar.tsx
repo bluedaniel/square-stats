@@ -13,13 +13,15 @@ export function NavBar({ right }: Props) {
 
   function isActive(href: string) {
     if (href === "/shots") return pathname === "/shots" || pathname === "/shot";
+    if (href === "/bag") return pathname === "/bag";
     return pathname === href;
   }
 
   const links = [
     { href: "/", label: "Dashboard" },
     { href: "/shots", label: "All Shots" },
-    { href: "/profile", label: "Bag Setup" },
+    { href: "/bag", label: "Bag Gapping" },
+    { href: "/profile", label: "Settings" },
   ];
 
   return (
