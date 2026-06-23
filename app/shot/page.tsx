@@ -8,7 +8,7 @@ import { NavBar } from "@/components/NavBar";
 import { ImpactChart } from "@/components/ImpactChart";
 import { LoftDiagram } from "@/components/LoftDiagram";
 import { FaceToPath } from "@/components/FaceToPath";
-import { LandingChart } from "@/components/LandingChart";
+import { FairwayView } from "@/components/FairwayView";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub } from "@/lib/profile";
@@ -236,12 +236,6 @@ export default function ShotPage() {
       setTimeout(() => setCopied(false), 2000);
     });
   }
-  const hideOutliers =
-    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true";
-  const clubShots = analysis.shots.filter(
-    (s, i) =>
-      s.club === shot.club && !(hideOutliers && analysis.outlierIndices.has(i)),
-  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -350,7 +344,17 @@ export default function ShotPage() {
           </div>
 
           <div>
-            <LandingChart shots={clubShots} currentShot={shot} />
+            {(() => {
+              const clubStats = analysis.clubStats.find(c => c.club === shot.club);
+              if (!clubStats) return null;
+              return (
+                <FairwayView
+                  analysis={analysis}
+                  clubs={[clubStats]}
+                  highlightShot={shot}
+                />
+              );
+            })()}
           </div>
         </div>
       </main>

@@ -11,16 +11,24 @@ const CLUB_COLORS = [
 export { CLUB_COLORS };
 
 const SVG_W = 360;
-const SVG_H = Math.round(360 * (867 / 608)); // match image aspect ratio (608×867)
+const FULL_SVG_H = Math.round(SVG_W * (867 / 608)); // image aspect ratio (608×867), represents 350 yd
+const PX_PER_YD = FULL_SVG_H / 350;
 const FAIRWAY_HALF_PX = 75; // fairway in the photo is ~150px wide
 
 interface Props {
   analysis: SessionAnalysis;
   clubs: ClubStats[];
+  highlightShot?: Shot;
 }
 
-export function FairwayView({ analysis, clubs }: Props) {
-  const CARRY_MAX = 350; // full image height = 350 yd
+export function FairwayView({ analysis, clubs, highlightShot }: Props) {
+  // Derive max carry from the clubs being displayed, rounded up to next 50yd + 10% buffer
+  const allCarries = clubs.flatMap(c =>
+    (analysis.shots.filter(s => s.club === c.club && s.carry > 0)).map(s => s.carry)
+  );
+  const rawMax = allCarries.length ? Math.max(...allCarries) : 350;
+  const CARRY_MAX = Math.ceil((rawMax * 1.1) / 50) * 50;
+  const SVG_H = Math.round(CARRY_MAX * PX_PER_YD);
 
   // Scale offline axis to p95 absolute value so outliers don't compress the band.
   const allOfflines = analysis.shots.map(s => Math.abs(s.offline)).sort((a, b) => a - b);
@@ -44,14 +52,15 @@ export function FairwayView({ analysis, clubs }: Props) {
       viewBox={`0 0 ${SVG_W} ${SVG_H}`}
       className="w-full rounded-xl overflow-hidden"
     >
+      {/* Image anchored at bottom so shorter views crop from the top */}
       <image
         href="/course/hole_topdown_photo.png"
-        x={0} y={0} width={SVG_W} height={SVG_H}
+        x={0} y={SVG_H - FULL_SVG_H} width={SVG_W} height={FULL_SVG_H}
         preserveAspectRatio="xMidYMid meet"
       />
 
-      {/* Yardage markers every 50 yd */}
-      {[50, 100, 150, 200, 250, 300].map(yd => {
+      {/* Yardage markers every 50 yd, only up to CARRY_MAX */}
+      {[50, 100, 150, 200, 250, 300].filter(yd => yd < CARRY_MAX).map(yd => {
         const y = sy(yd);
         return (
           <g key={yd}>
@@ -92,13 +101,28 @@ export function FairwayView({ analysis, clubs }: Props) {
               cx={cx} cy={cy} rx={rx} ry={ry}
               fill="none" stroke={color} strokeWidth={2} strokeOpacity={0.85}
             />
-            {shots.map((s, si) => (
-              <circle
-                key={si}
-                cx={sx(s.offline)} cy={sy(s.carry)}
-                r={3.5} fill={color} stroke="white" strokeWidth={1} opacity={0.9}
-              />
-            ))}
+            {shots.map((s, si) => {
+              const isHighlight = highlightShot && s === highlightShot;
+              return (
+                <g key={si}>
+                  <circle
+                    cx={sx(s.offline)} cy={sy(s.carry)}
+                    r={isHighlight ? 5.5 : 3.5}
+                    fill={isHighlight ? "#facc15" : color}
+                    stroke="white" strokeWidth={isHighlight ? 1.5 : 1}
+                    opacity={isHighlight ? 1 : 0.9}
+                  />
+                  {isHighlight && (
+                    <text
+                      x={sx(s.offline)} y={sy(s.carry) - 9}
+                      textAnchor="middle" fontSize={8} fontWeight="700" fill="#facc15"
+                    >
+                      #{s.index}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
             <text
               x={cx + rx + 4} y={cy}
               fontSize={9} fill={color} fontWeight="700" dominantBaseline="middle"
