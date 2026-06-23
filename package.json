@@ -18,6 +18,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.18",
     "@tanstack/react-table": "^8.21.3",
     "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-opener": "^2.5.4",
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-updater": "^2.10.1",
     "@types/papaparse": "^5.5.2",
