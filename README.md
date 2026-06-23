@@ -8,11 +8,15 @@ A local desktop app for analysing Square Omni launch monitor sessions. Drop in o
 
 ## Screenshots
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard.jpeg)
 
-![Single shot](screenshots/single-shot.png)
+![Single shot](screenshots/single-shot.jpeg)
 
-![All shots](screenshots/all-shots.png)
+![All shots](screenshots/all-shots.jpeg)
+
+![Bag gapping](screenshots/bag-gapping.jpeg)
+
+![Compare sessions](screenshots/compare-sessions.jpeg)
 
 ## What it does
 
