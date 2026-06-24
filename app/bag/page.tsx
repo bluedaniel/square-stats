@@ -208,6 +208,31 @@ type SortKey =
   | "avgSpinRate"
   | "avgSmash";
 
+function SortTh({
+  k,
+  label,
+  sortKey,
+  sortAsc,
+  onToggle,
+}: {
+  k: SortKey;
+  label: string;
+  sortKey: SortKey;
+  sortAsc: boolean;
+  onToggle: (k: SortKey) => void;
+}) {
+  const active = sortKey === k;
+  return (
+    <th
+      className="px-3 py-2 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground whitespace-nowrap"
+      onClick={() => onToggle(k)}
+    >
+      {label}
+      {active ? (sortAsc ? " ↑" : " ↓") : ""}
+    </th>
+  );
+}
+
 function TableView({ clubs }: { clubs: ClubStats[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("avgCarry");
   const [sortAsc, setSortAsc] = useState(false);
@@ -228,36 +253,36 @@ function TableView({ clubs }: { clubs: ClubStats[] }) {
     return sortAsc ? cmp : -cmp;
   });
 
-  function Th({ k, label }: { k: SortKey; label: string }) {
-    const active = sortKey === k;
-    return (
-      <th
-        className="px-3 py-2 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground whitespace-nowrap"
-        onClick={() => toggle(k)}
-      >
-        {label}
-        {active ? (sortAsc ? " ↑" : " ↓") : ""}
-      </th>
-    );
-  }
-
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-sm">
         <thead className="border-b border-border bg-muted/40">
           <tr>
-            <Th k="club" label="Club" />
-            <Th k="count" label="Shots" />
-            <Th k="avgCarry" label="Carry" />
-            <Th k="stdDevCarry" label="±Carry" />
-            <Th k="avgTotal" label="Total" />
-            <Th k="avgBallSpeed" label="Ball Speed" />
-            <Th k="avgSpinRate" label="Spin" />
-            <Th k="avgSmash" label="Smash" />
+            {(
+              [
+                ["club", "Club"],
+                ["count", "Shots"],
+                ["avgCarry", "Carry"],
+                ["stdDevCarry", "±Carry"],
+                ["avgTotal", "Total"],
+                ["avgBallSpeed", "Ball Speed"],
+                ["avgSpinRate", "Spin"],
+                ["avgSmash", "Smash"],
+              ] as [SortKey, string][]
+            ).map(([k, label]) => (
+              <SortTh
+                key={k}
+                k={k}
+                label={label}
+                sortKey={sortKey}
+                sortAsc={sortAsc}
+                onToggle={toggle}
+              />
+            ))}
           </tr>
         </thead>
         <tbody>
-          {sorted.map((club, i) => (
+          {sorted.map((club) => (
             <tr
               key={club.club}
               className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"

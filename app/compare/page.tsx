@@ -341,7 +341,7 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
                 contentStyle={{ fontSize: 12 }}
               />
               <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-              {(selectedClub === "All" ? commonClubs : [selectedClub]).map((club, i) => (
+              {(selectedClub === "All" ? commonClubs : [selectedClub]).map((club) => (
                 <Line
                   key={club}
                   dataKey={club}

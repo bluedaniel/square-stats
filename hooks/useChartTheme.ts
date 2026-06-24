@@ -16,13 +16,13 @@ function resolveColors(): ChartColors {
 }
 
 export function useChartTheme(): ChartColors {
-  const [colors, setColors] = useState<ChartColors>({
-    mutedForeground: "oklch(0.556 0 0)",
-    border: "oklch(0.922 0 0)",
-  });
+  const [colors, setColors] = useState<ChartColors>(() =>
+    typeof document !== "undefined"
+      ? resolveColors()
+      : { mutedForeground: "oklch(0.556 0 0)", border: "oklch(0.922 0 0)" }
+  );
 
   useEffect(() => {
-    setColors(resolveColors());
     const observer = new MutationObserver(() => setColors(resolveColors()));
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => observer.disconnect();

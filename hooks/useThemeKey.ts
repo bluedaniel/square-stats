@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 
 export function useThemeKey() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  );
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
