@@ -14,54 +14,17 @@ interface Props {
 interface SideConfig {
   image: string;
   origW: number;
-  leX: number;
   leY: number;
   scale: number;
 }
 
 const SIDE_CONFIGS: Record<ClubKey, SideConfig> = {
-  driver: {
-    image: "Driver_Side_2.png",
-    origW: 556,
-    leX: 0,
-    leY: 300,
-    scale: 0.28,
-  },
-  "3wood": {
-    image: "3Wood_Side_2.png",
-    origW: 519,
-    leX: 0,
-    leY: 330,
-    scale: 0.28,
-  },
-  "4iron": {
-    image: "4Iron_Side_2.png",
-    origW: 128,
-    leX: 0,
-    leY: 330,
-    scale: 0.4,
-  },
-  "7iron": {
-    image: "7Iron_Side_2.png",
-    origW: 158,
-    leX: 0,
-    leY: 330,
-    scale: 0.4,
-  },
-  "9iron": {
-    image: "9Iron_Side_2.png",
-    origW: 194,
-    leX: 0,
-    leY: 330,
-    scale: 0.4,
-  },
-  pw: {
-    image: "PitchingWedge_Side_2.png",
-    origW: 158,
-    leX: 0,
-    leY: 300,
-    scale: 0.5,
-  },
+  driver: { image: "Driver_Side_2.png", origW: 556, leY: 300, scale: 0.28 },
+  "3wood": { image: "3Wood_Side_2.png", origW: 519, leY: 330, scale: 0.28 },
+  "4iron": { image: "4Iron_Side_2.png", origW: 128, leY: 330, scale: 0.4 },
+  "7iron": { image: "7Iron_Side_2.png", origW: 158, leY: 330, scale: 0.4 },
+  "9iron": { image: "9Iron_Side_2.png", origW: 194, leY: 330, scale: 0.4 },
+  pw: { image: "PitchingWedge_Side_2.png", origW: 158, leY: 300, scale: 0.5 },
 };
 
 export function LoftDiagram({ launchAngle, dynamicLoft, attackAngle, club }: Props) {
@@ -69,8 +32,7 @@ export function LoftDiagram({ launchAngle, dynamicLoft, attackAngle, club }: Pro
   const LINE = 150;
   const LO = 50;
 
-  // Pin leading edge to (0,0)
-  const imgX = -cfg.leX * cfg.scale;
+  const imgX = 0;
   const imgY = -cfg.leY * cfg.scale;
   const imgW = cfg.origW * cfg.scale;
   const imgH = 460 * cfg.scale;
