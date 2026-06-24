@@ -8,6 +8,8 @@ import {
 import { NavBar } from "@/components/NavBar";
 import { ClubSelector } from "@/components/ClubSelector";
 import { CopyForAIButton } from "@/components/CopyForAIButton";
+import { EmptyState, NoSessionState } from "@/components/EmptyState";
+import { GitCompareArrows } from "lucide-react";
 import { CLUB_COLORS } from "@/components/FairwayView";
 import { useSession } from "@/contexts/SessionContext";
 import type { Session } from "@/contexts/SessionContext";
@@ -43,6 +45,15 @@ type MetricKey = typeof OVERVIEW_METRICS[number]["key"];
 export default function ComparePage() {
   const { sessions } = useSession();
 
+  if (sessions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <NavBar />
+        <div className="flex-1 overflow-hidden"><NoSessionState page="compare" /></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NavBar />
@@ -55,9 +66,11 @@ export default function ComparePage() {
         </div>
 
         {sessions.length < 2 ? (
-          <p className="text-sm text-muted-foreground py-12 text-center border border-dashed border-border rounded-lg max-w-lg">
-            Load at least 2 sessions to compare them.
-          </p>
+          <EmptyState
+            icon={GitCompareArrows}
+            title="Not enough sessions"
+            description="Load at least 2 CSV sessions to compare them side by side."
+          />
         ) : (
           <CompareContent sessions={sessions} />
         )}

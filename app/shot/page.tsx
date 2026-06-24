@@ -16,6 +16,8 @@ import { IdealsViewModal } from "@/components/IdealsViewModal";
 import { Button } from "@/components/ui/button";
 import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
 import { CopyForAIButton } from "@/components/CopyForAIButton";
+import { EmptyState } from "@/components/EmptyState";
+import { MousePointerClick } from "lucide-react";
 import type { Shot } from "@/types/shot";
 
 function fmtDir(n: number): string {
@@ -211,13 +213,16 @@ export default function ShotPage() {
 
   if (!selectedShot || !analysis) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center space-y-3">
-          <p className="text-muted-foreground">No shot selected.</p>
-          <Link href="/shots" className="text-sm underline">
-            Back to shots
-          </Link>
-        </div>
+      <div className="min-h-screen bg-background text-foreground">
+        <NavBar />
+        <main className="p-6">
+          <EmptyState
+            icon={MousePointerClick}
+            title="No shot selected"
+            description="Select a shot from the shots table to view its details."
+            action={<Link href="/shots" className="text-xs text-primary underline">Go to shots</Link>}
+          />
+        </main>
       </div>
     );
   }

@@ -1,39 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { CSVDropzone } from "@/components/CSVDropzone";
 import { Dashboard } from "@/components/Dashboard";
+import { NavBar } from "@/components/NavBar";
+import { NoSessionState } from "@/components/EmptyState";
 import { useSession } from "@/contexts/SessionContext";
-import { useLoadSession } from "@/hooks/useLoadSession";
 
 export default function Home() {
-  const { analysis, filename, sessions, removeSession, activeId } = useSession();
-  const { loadFile } = useLoadSession();
-  const [error, setError] = useState<string | null>(null);
+  const { analysis, filename } = useSession();
 
-  function handleFile(text: string, name: string) {
-    try {
-      setError(null);
-      loadFile(text, name);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to parse CSV");
-    }
-  }
-
-  if (sessions.length > 0 && analysis) {
+  if (!analysis) {
     return (
-      <Dashboard analysis={analysis} filename={filename} />
+      <div className="min-h-screen bg-background text-foreground">
+        <NavBar />
+        <div className="flex-1 overflow-hidden"><NoSessionState page="dashboard" /></div>
+      </div>
     );
   }
 
-  return (
-    <div>
-      <CSVDropzone onFile={handleFile} />
-      {error && (
-        <p className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-destructive text-destructive-foreground text-sm px-4 py-2 rounded shadow">
-          {error}
-        </p>
-      )}
-    </div>
-  );
+  return <Dashboard analysis={analysis} filename={filename} />;
 }

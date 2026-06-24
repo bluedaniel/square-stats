@@ -35,7 +35,25 @@ export function SessionSwitcher() {
     setOpen(false);
   }
 
-  if (!sessions.length) return null;
+  if (!sessions.length) return (
+    <div>
+      <button
+        onClick={() => inputRef.current?.click()}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs border border-border bg-muted/40 hover:bg-muted transition-colors"
+      >
+        <Plus size={11} className="shrink-0 text-muted-foreground" />
+        Load session
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".csv"
+        multiple
+        className="hidden"
+        onChange={e => handleFiles(e.target.files)}
+      />
+    </div>
+  );
 
   return (
     <div ref={containerRef} className="relative">

@@ -6,6 +6,7 @@ import { NavBar } from "@/components/NavBar";
 import type { SessionAnalysis, ClubStats } from "@/types/shot";
 import { FairwayView, CLUB_COLORS } from "@/components/FairwayView";
 import { CopyForAIButton } from "@/components/CopyForAIButton";
+import { NoSessionState } from "@/components/EmptyState";
 
 function gapColor(gap: number) {
   if (gap < 8)  return "text-orange-500";
@@ -48,6 +49,15 @@ export default function BagPage() {
     ? [...analysis.clubStats].filter(c => c.avgCarry > 0 && c.count >= 2).sort((a, b) => b.avgCarry - a.avgCarry)
     : [];
 
+  if (!analysis) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <NavBar />
+        <div className="flex-1 overflow-hidden"><NoSessionState page="bag" /></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NavBar />
@@ -60,12 +70,10 @@ export default function BagPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {analysis && (
-              <CopyForAIButton
-                getText={() => buildAIText(clubs)}
-                className="text-sm px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              />
-            )}
+            <CopyForAIButton
+              getText={() => buildAIText(clubs)}
+              className="text-sm px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            />
             <div className="flex rounded-lg border border-border overflow-hidden text-sm">
               {(["map", "table", "ladder"] as View[]).map(v => (
                 <button
@@ -84,14 +92,7 @@ export default function BagPage() {
             </div>
           </div>
         </div>
-
-        {!analysis ? (
-          <p className="text-sm text-muted-foreground py-12 text-center border border-dashed border-border rounded-lg max-w-lg">
-            Load a session from the home screen to see your bag gapping.
-          </p>
-        ) : (
-          <GappingLayout analysis={analysis} view={view} />
-        )}
+        <GappingLayout analysis={analysis} view={view} />
       </main>
     </div>
   );

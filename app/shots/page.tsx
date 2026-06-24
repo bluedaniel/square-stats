@@ -34,6 +34,7 @@ import { loadProfile, findBagClub, profileStatStatus, type ClubStatKey } from "@
 import { SessionMeta } from "@/components/SessionMeta";
 import { Button } from "@/components/ui/button";
 import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
+import { NoSessionState } from "@/components/EmptyState";
 import type { Shot } from "@/types/shot";
 
 // Augment TanStack meta type
@@ -205,11 +206,9 @@ export default function ShotsPage() {
 
   if (!analysis) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center space-y-3">
-          <p className="text-muted-foreground">No session loaded.</p>
-          <Link href="/" className="text-sm underline">Load a CSV</Link>
-        </div>
+      <div className="min-h-screen bg-background text-foreground">
+        <NavBar />
+        <div className="flex-1 overflow-hidden"><NoSessionState page="shots" /></div>
       </div>
     );
   }
