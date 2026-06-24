@@ -1,32 +1,5 @@
-export interface SessionMeta {
-  date: string;
-  place: string;
-}
-
-export interface Shot {
-  club: string;
-  index: number;
-  ballSpeed: number;
-  launchDirection: number;
-  launchAngle: number;
-  spinRate: number;
-  spinAxis: number;
-  backSpin: number;
-  sideSpin: number;
-  apex: number;
-  carry: number;
-  total: number;
-  offline: number;
-  landingAngle: number;
-  clubPath: number;
-  faceAngle: number;
-  attackAngle: number;
-  dynamicLoft: number;
-  impactHorizontal: number;
-  impactVertical: number;
-  clubSpeed: number;
-  smashFactor: number;
-}
+export type { Shot, SessionMeta } from "@/schemas/shot";
+import type { Shot, SessionMeta } from "@/schemas/shot";
 
 export interface ClubStats {
   club: string;
