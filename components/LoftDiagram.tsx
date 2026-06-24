@@ -23,22 +23,22 @@ const SIDE_CONFIGS: Record<ClubKey, SideConfig> = {
   driver: {
     image: "Driver_Side_2.png",
     origW: 556,
-    leX: 108,
-    leY: 453,
+    leX: 0,
+    leY: 300,
     scale: 0.28,
   },
   "3wood": {
     image: "3Wood_Side_2.png",
     origW: 519,
-    leX: 159,
-    leY: 447,
+    leX: 0,
+    leY: 330,
     scale: 0.28,
   },
   "4iron": {
     image: "4Iron_Side_2.png",
     origW: 128,
-    leX: 38,
-    leY: 438,
+    leX: 0,
+    leY: 330,
     scale: 0.4,
   },
   "7iron": {
@@ -51,16 +51,16 @@ const SIDE_CONFIGS: Record<ClubKey, SideConfig> = {
   "9iron": {
     image: "9Iron_Side_2.png",
     origW: 194,
-    leX: 56,
-    leY: 442,
+    leX: 0,
+    leY: 330,
     scale: 0.4,
   },
   pw: {
     image: "PitchingWedge_Side_2.png",
     origW: 158,
     leX: 0,
-    leY: 330,
-    scale: 0.4,
+    leY: 300,
+    scale: 0.5,
   },
 };
 

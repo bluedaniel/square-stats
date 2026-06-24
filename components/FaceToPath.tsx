@@ -19,12 +19,12 @@ interface TopConfig {
 // imgX: left edge of 200×200 display box in SVG coords.
 // Calibrated so the face left edge is ~50 SVG units left of impact (0,-20).
 const TOP_CONFIGS: Record<ClubKey, TopConfig> = {
-  driver: { image: "Driver_Top.png", imgX: -51 },
-  "3wood": { image: "3Wood_Top.png", imgX: -51 },
+  driver: { image: "Driver_Top.png", imgX: -16 },
+  "3wood": { image: "3Wood_Top.png", imgX: -21 },
   "4iron": { image: "4Iron_Top.png", imgX: -61 },
   "7iron": { image: "7Iron_Top.png", imgX: -60 },
   "9iron": { image: "9Iron_Top.png", imgX: -57 },
-  pw: { image: "PitchingWedge_Top.png", imgX: -56 },
+  pw: { image: "PitchingWedge_Top.png", imgX: -46 },
 };
 
 function fmtDir(n: number): string {
