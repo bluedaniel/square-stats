@@ -14,8 +14,18 @@ export function SessionMeta({ meta, filename, suffix, outlierCount }: Props) {
       {meta.place && ` · ${meta.place}`}
       {" · "}
       <span className="italic">{filename}</span>
-      {suffix && <>{" · "}{suffix}</>}
-      {outlierCount != null && outlierCount > 0 && <>{" · "}{outlierCount} outlier{outlierCount !== 1 ? "s" : ""}</>}
+      {suffix && (
+        <>
+          {" · "}
+          {suffix}
+        </>
+      )}
+      {outlierCount != null && outlierCount > 0 && (
+        <>
+          {" · "}
+          {outlierCount} outlier{outlierCount !== 1 ? "s" : ""}
+        </>
+      )}
     </p>
   );
 }

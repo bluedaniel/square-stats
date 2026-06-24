@@ -61,31 +61,33 @@ export function parseSquareCSV(csvText: string): ParsedSession {
     const club = String(row[col("Club")] ?? "").trim();
     if (!club || club === "Average" || club === "Deviation") continue;
 
-    shots.push(ShotSchema.parse({
-      club,
-      index:            parseNum(row[col("Index")]),
-      ballSpeed:        parseNum(row[col("Ball Speed(mph)")]),
-      launchDirection:  parseDirectional(row[col("Launch Direction")]),
-      launchAngle:      parseNum(row[col("Launch Angle")]),
-      spinRate:         Math.abs(parseDirectional(row[col("Spin Rate")])),
-      spinAxis:         parseDirectional(row[col("Spin Axis")]),
-      backSpin:         Math.abs(parseDirectional(row[col("Back Spin")])),
-      sideSpin:         parseDirectional(row[col("Side Spin")]),
-      apex:             parseNum(row[col("Apex(yd)")]),
-      carry:            parseNum(row[col("Carry(yd)")]),
-      total:            parseNum(row[col("Total(yd)")]),
-      offline:          parseDirectional(row[col("Offline(yd)")]),
-      landingAngle:     parseNum(row[col("Landing Angle")]),
-      clubPath:         parseDirectional(row[col("Club Path")]),
-      faceAngle:        parseDirectional(row[col("Face Angle")]),
-      attackAngle:      parseNum(row[col("Attack Angle")]),
-      dynamicLoft:      parseNum(row[col("Dynamic Loft")]),
-      impactHorizontal: parseDirectional(row[col("ImpactHorizontal")]),
-      impactVertical:   parseNum(row[col("ImpactVertical")]),
-      clubSpeed:        parseNum(row[col("ClubSpeed")]) * 2.23694,
-      smashFactor:      parseNum(row[col("SmashFactor")]),
-    }));
+    shots.push(
+      ShotSchema.parse({
+        club,
+        index: parseNum(row[col("Index")]),
+        ballSpeed: parseNum(row[col("Ball Speed(mph)")]),
+        launchDirection: parseDirectional(row[col("Launch Direction")]),
+        launchAngle: parseNum(row[col("Launch Angle")]),
+        spinRate: Math.abs(parseDirectional(row[col("Spin Rate")])),
+        spinAxis: parseDirectional(row[col("Spin Axis")]),
+        backSpin: Math.abs(parseDirectional(row[col("Back Spin")])),
+        sideSpin: parseDirectional(row[col("Side Spin")]),
+        apex: parseNum(row[col("Apex(yd)")]),
+        carry: parseNum(row[col("Carry(yd)")]),
+        total: parseNum(row[col("Total(yd)")]),
+        offline: parseDirectional(row[col("Offline(yd)")]),
+        landingAngle: parseNum(row[col("Landing Angle")]),
+        clubPath: parseDirectional(row[col("Club Path")]),
+        faceAngle: parseDirectional(row[col("Face Angle")]),
+        attackAngle: parseNum(row[col("Attack Angle")]),
+        dynamicLoft: parseNum(row[col("Dynamic Loft")]),
+        impactHorizontal: parseDirectional(row[col("ImpactHorizontal")]),
+        impactVertical: parseNum(row[col("ImpactVertical")]),
+        clubSpeed: parseNum(row[col("ClubSpeed")]) * 2.23694,
+        smashFactor: parseNum(row[col("SmashFactor")]),
+      })
+    );
   }
 
-  return { meta, shots };  // already validated per-item above; types guaranteed by ShotSchema
+  return { meta, shots }; // already validated per-item above; types guaranteed by ShotSchema
 }

@@ -20,12 +20,20 @@ export function HighlightToggle({ mode, onCycle }: Props) {
         size="sm"
         variant="outline"
         className={cn(
-          mode === "positive" && "!bg-green-500 !text-white !border-green-500 hover:!bg-green-500/80",
+          mode === "positive" &&
+            "!bg-green-500 !text-white !border-green-500 hover:!bg-green-500/80",
           mode === "negative" && "!bg-red-500 !text-white !border-red-500 hover:!bg-red-500/80",
-          mode === "both"     && "!bg-primary !text-primary-foreground !border-primary hover:!bg-primary/80",
+          mode === "both" &&
+            "!bg-primary !text-primary-foreground !border-primary hover:!bg-primary/80"
         )}
       >
-        {mode === "off" ? "Off" : mode === "positive" ? "Positive" : mode === "negative" ? "Negative" : "Both"}
+        {mode === "off"
+          ? "Off"
+          : mode === "positive"
+            ? "Positive"
+            : mode === "negative"
+              ? "Negative"
+              : "Both"}
       </Button>
     </div>
   );

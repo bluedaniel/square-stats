@@ -22,8 +22,13 @@ export function NoSessionState({ page }: { page: SkeletonPage }) {
       <div className="absolute inset-0 flex items-center justify-center p-6">
         <CSVDropzone
           onFile={(text, name) => {
-            try { loadFile(text, name); }
-            catch (e) { toast.error(e instanceof Error ? e.message : "Could not read file", { description: name }); }
+            try {
+              loadFile(text, name);
+            } catch (e) {
+              toast.error(e instanceof Error ? e.message : "Could not read file", {
+                description: name,
+              });
+            }
           }}
         />
       </div>

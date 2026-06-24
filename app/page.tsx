@@ -12,7 +12,9 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <NavBar />
-        <div className="flex-1 overflow-hidden"><NoSessionState page="dashboard" /></div>
+        <div className="flex-1 overflow-hidden">
+          <NoSessionState page="dashboard" />
+        </div>
       </div>
     );
   }

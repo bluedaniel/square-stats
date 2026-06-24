@@ -41,7 +41,11 @@ export function TauriInit() {
       });
     })();
 
-    return () => { unlisten?.(); unlistenEnter?.(); unlistenLeave?.(); };
+    return () => {
+      unlisten?.();
+      unlistenEnter?.();
+      unlistenLeave?.();
+    };
   }, [loadFile]);
 
   return null;

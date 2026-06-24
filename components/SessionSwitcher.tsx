@@ -13,7 +13,7 @@ export function SessionSwitcher() {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const active = sessions.find(s => s.id === activeId);
+  const active = sessions.find((s) => s.id === activeId);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -25,41 +25,47 @@ export function SessionSwitcher() {
 
   function handleFiles(files: FileList | null) {
     if (!files) return;
-    Array.from(files).forEach(file => {
+    Array.from(files).forEach((file) => {
       const reader = new FileReader();
-      reader.onload = e => {
-        try { loadFile(e.target?.result as string, file.name); }
-        catch (err) { toast.error(err instanceof Error ? err.message : "Could not read file", { description: file.name }); }
+      reader.onload = (e) => {
+        try {
+          loadFile(e.target?.result as string, file.name);
+        } catch (err) {
+          toast.error(err instanceof Error ? err.message : "Could not read file", {
+            description: file.name,
+          });
+        }
       };
       reader.readAsText(file);
     });
     setOpen(false);
   }
 
-  if (!sessions.length) return (
-    <div>
-      <button
-        onClick={() => inputRef.current?.click()}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs border border-border bg-muted/40 hover:bg-muted transition-colors"
-      >
-        <Plus size={11} className="shrink-0 text-muted-foreground" />
-        Load session
-      </button>
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".csv"
-        multiple
-        className="hidden"
-        onChange={e => handleFiles(e.target.files)}
-      />
-    </div>
-  );
+  if (!sessions.length)
+    return (
+      <div>
+        <button
+          onClick={() => inputRef.current?.click()}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs border border-border bg-muted/40 hover:bg-muted transition-colors"
+        >
+          <Plus size={11} className="shrink-0 text-muted-foreground" />
+          Load session
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".csv"
+          multiple
+          className="hidden"
+          onChange={(e) => handleFiles(e.target.files)}
+        />
+      </div>
+    );
 
   return (
     <div ref={containerRef} className="relative">
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs border border-border bg-muted/40 hover:bg-muted transition-colors max-w-[180px]"
       >
         <LayoutGrid size={11} className="shrink-0 text-muted-foreground" />
@@ -77,24 +83,30 @@ export function SessionSwitcher() {
       {open && (
         <div className="absolute right-0 top-full mt-1.5 w-64 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden">
           <div className="p-1">
-            {sessions.map(s => (
+            {sessions.map((s) => (
               <div
                 key={s.id}
-                onClick={() => { setActiveId(s.id); setOpen(false); }}
+                onClick={() => {
+                  setActiveId(s.id);
+                  setOpen(false);
+                }}
                 className={[
                   "flex items-center gap-2 px-2.5 py-2 rounded-md cursor-pointer group transition-colors",
                   s.id === activeId ? "bg-muted" : "hover:bg-muted/60",
                 ].join(" ")}
               >
-                <span className={[
-                  "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
-                  s.id === activeId ? "bg-primary" : "bg-muted-foreground/30",
-                ].join(" ")} />
-                <span className="flex-1 text-sm truncate">
-                  {s.filename.replace(/\.csv$/i, "")}
-                </span>
+                <span
+                  className={[
+                    "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
+                    s.id === activeId ? "bg-primary" : "bg-muted-foreground/30",
+                  ].join(" ")}
+                />
+                <span className="flex-1 text-sm truncate">{s.filename.replace(/\.csv$/i, "")}</span>
                 <button
-                  onClick={e => { e.stopPropagation(); removeSession(s.id); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeSession(s.id);
+                  }}
                   className="shrink-0 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/20 hover:text-destructive transition-all"
                   aria-label="Remove"
                 >
@@ -122,7 +134,7 @@ export function SessionSwitcher() {
         accept=".csv"
         multiple
         className="hidden"
-        onChange={e => handleFiles(e.target.files)}
+        onChange={(e) => handleFiles(e.target.files)}
       />
     </div>
   );

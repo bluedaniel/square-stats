@@ -11,7 +11,13 @@ import { FaceToPath } from "@/components/FaceToPath";
 import { FairwayView } from "@/components/FairwayView";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/contexts/SessionContext";
-import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub } from "@/lib/profile";
+import {
+  loadProfile,
+  findBagClub,
+  profileStatStatus,
+  csvToLabel,
+  type BagClub,
+} from "@/lib/profile";
 import { recomputeClubStats } from "@/utils/analyze";
 import { IdealsViewModal } from "@/components/IdealsViewModal";
 import { Button } from "@/components/ui/button";
@@ -47,23 +53,30 @@ function idealText(ideal: StatRowProps["ideal"]): string | undefined {
   return undefined;
 }
 
-function Stat({ label, value, sub, status, ideal, highlightMode }: StatRowProps & { highlightMode: HighlightMode }) {
+function Stat({
+  label,
+  value,
+  sub,
+  status,
+  ideal,
+  highlightMode,
+}: StatRowProps & { highlightMode: HighlightMode }) {
   const showGood = status === "good" && (highlightMode === "positive" || highlightMode === "both");
-  const showBad  = status === "bad"  && (highlightMode === "negative" || highlightMode === "both");
+  const showBad = status === "bad" && (highlightMode === "negative" || highlightMode === "both");
   const hint = idealText(ideal);
   return (
     <div className="relative group">
-      <Card className={[
-        "aspect-square flex flex-col items-center justify-center text-center p-3 gap-1 max-w-32 bg-muted/40",
-        showGood ? "ring-2 ring-green-500" : "",
-        showBad  ? "ring-2 ring-red-500"   : "",
-      ].join(" ")}>
+      <Card
+        className={[
+          "aspect-square flex flex-col items-center justify-center text-center p-3 gap-1 max-w-32 bg-muted/40",
+          showGood ? "ring-2 ring-green-500" : "",
+          showBad ? "ring-2 ring-red-500" : "",
+        ].join(" ")}
+      >
         <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-tight">
           {label}
         </span>
-        <span className="text-lg font-semibold tabular-nums leading-tight">
-          {value}
-        </span>
+        <span className="text-lg font-semibold tabular-nums leading-tight">{value}</span>
         {sub && <span className="text-[10px] text-muted-foreground">{sub}</span>}
       </Card>
       {hint && (
@@ -84,9 +97,11 @@ interface GroupProps {
 
 function StatGroup({ title, stats, cols = 3, highlightMode }: GroupProps) {
   const gridClass =
-    cols === 2 ? "grid-cols-2" :
-    cols === 4 ? "grid-cols-2 sm:grid-cols-4" :
-                 "grid-cols-2 sm:grid-cols-3";
+    cols === 2
+      ? "grid-cols-2"
+      : cols === 4
+        ? "grid-cols-2 sm:grid-cols-4"
+        : "grid-cols-2 sm:grid-cols-3";
   return (
     <div>
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 px-0.5">
@@ -105,7 +120,7 @@ function buildCopyText(
   shot: Shot,
   groups: ReturnType<typeof buildGroups>,
   meta: { date: string; place: string },
-  flags: string[],
+  flags: string[]
 ): string {
   const lines: string[] = [
     `Golf shot data — ${shot.club}, Shot #${shot.index}`,
@@ -116,10 +131,15 @@ function buildCopyText(
   for (const group of groups) {
     lines.push(group.title);
     for (const stat of group.stats) {
-      const ideal = stat.ideal ? ` (ideal: ${
-        stat.ideal.min != null && stat.ideal.max != null ? `${stat.ideal.min}–${stat.ideal.max}` :
-        stat.ideal.min != null ? `≥${stat.ideal.min}` : `≤${stat.ideal.max}`
-      })` : "";
+      const ideal = stat.ideal
+        ? ` (ideal: ${
+            stat.ideal.min != null && stat.ideal.max != null
+              ? `${stat.ideal.min}–${stat.ideal.max}`
+              : stat.ideal.min != null
+                ? `≥${stat.ideal.min}`
+                : `≤${stat.ideal.max}`
+          })`
+        : "";
       lines.push(`  ${stat.label}: ${stat.value}${ideal}`);
     }
     lines.push("");
@@ -137,48 +157,138 @@ function buildGroups(shot: Shot, bagClub: BagClub | undefined) {
       title: "Distance",
       cols: 4 as const,
       stats: [
-        { label: "Carry",   value: fmt(shot.carry, 1, "yd"),       status: s("carry",   shot.carry),   ideal: i("carry")   },
-        { label: "Total",   value: fmt(shot.total, 1, "yd"),        status: s("total",   shot.total),   ideal: i("total")   },
-        { label: "Apex",    value: fmt(shot.apex, 1, "yd"),         status: s("apex",    shot.apex),    ideal: i("apex")    },
-        { label: "Offline", value: fmtDir(shot.offline) + " yd",   status: s("offline", shot.offline), ideal: i("offline") },
+        {
+          label: "Carry",
+          value: fmt(shot.carry, 1, "yd"),
+          status: s("carry", shot.carry),
+          ideal: i("carry"),
+        },
+        {
+          label: "Total",
+          value: fmt(shot.total, 1, "yd"),
+          status: s("total", shot.total),
+          ideal: i("total"),
+        },
+        {
+          label: "Apex",
+          value: fmt(shot.apex, 1, "yd"),
+          status: s("apex", shot.apex),
+          ideal: i("apex"),
+        },
+        {
+          label: "Offline",
+          value: fmtDir(shot.offline) + " yd",
+          status: s("offline", shot.offline),
+          ideal: i("offline"),
+        },
       ],
     },
     {
       title: "Speed & Contact",
       cols: 4 as const,
       stats: [
-        { label: "Ball Speed",   value: fmt(shot.ballSpeed, 1, "mph"),                       status: s("ballSpeed",   shot.ballSpeed),   ideal: i("ballSpeed")   },
-        { label: "Club Speed",   value: shot.clubSpeed   ? fmt(shot.clubSpeed, 1, "mph") : "—", status: s("clubSpeed",   shot.clubSpeed),   ideal: i("clubSpeed")   },
-        { label: "Smash Factor", value: shot.smashFactor ? fmt(shot.smashFactor, 2)      : "—", status: s("smashFactor", shot.smashFactor), ideal: i("smashFactor") },
+        {
+          label: "Ball Speed",
+          value: fmt(shot.ballSpeed, 1, "mph"),
+          status: s("ballSpeed", shot.ballSpeed),
+          ideal: i("ballSpeed"),
+        },
+        {
+          label: "Club Speed",
+          value: shot.clubSpeed ? fmt(shot.clubSpeed, 1, "mph") : "—",
+          status: s("clubSpeed", shot.clubSpeed),
+          ideal: i("clubSpeed"),
+        },
+        {
+          label: "Smash Factor",
+          value: shot.smashFactor ? fmt(shot.smashFactor, 2) : "—",
+          status: s("smashFactor", shot.smashFactor),
+          ideal: i("smashFactor"),
+        },
       ],
     },
     {
       title: "Launch",
       cols: 4 as const,
       stats: [
-        { label: "Launch Angle",     value: fmt(shot.launchAngle, 1, "°"),      status: s("launchAngle",     shot.launchAngle),     ideal: i("launchAngle")     },
-        { label: "Launch Direction", value: fmtDir(shot.launchDirection) + "°", status: s("launchDirection", shot.launchDirection), ideal: i("launchDirection") },
-        { label: "Landing Angle",    value: fmt(shot.landingAngle, 1, "°"),     status: s("landingAngle",    shot.landingAngle),    ideal: i("landingAngle")    },
+        {
+          label: "Launch Angle",
+          value: fmt(shot.launchAngle, 1, "°"),
+          status: s("launchAngle", shot.launchAngle),
+          ideal: i("launchAngle"),
+        },
+        {
+          label: "Launch Direction",
+          value: fmtDir(shot.launchDirection) + "°",
+          status: s("launchDirection", shot.launchDirection),
+          ideal: i("launchDirection"),
+        },
+        {
+          label: "Landing Angle",
+          value: fmt(shot.landingAngle, 1, "°"),
+          status: s("landingAngle", shot.landingAngle),
+          ideal: i("landingAngle"),
+        },
       ],
     },
     {
       title: "Spin",
       cols: 4 as const,
       stats: [
-        { label: "Spin Rate", value: shot.spinRate ? fmt(shot.spinRate, 0, "rpm") : "—", status: s("spinRate", shot.spinRate), ideal: i("spinRate") },
-        { label: "Spin Axis", value: fmtDir(shot.spinAxis) + "°",    status: s("spinAxis", shot.spinAxis), ideal: i("spinAxis") },
-        { label: "Back Spin", value: fmt(shot.backSpin, 0, "rpm"),   status: s("backSpin", shot.backSpin), ideal: i("backSpin") },
-        { label: "Side Spin", value: fmtDir(shot.sideSpin) + " rpm", status: s("sideSpin", shot.sideSpin), ideal: i("sideSpin") },
+        {
+          label: "Spin Rate",
+          value: shot.spinRate ? fmt(shot.spinRate, 0, "rpm") : "—",
+          status: s("spinRate", shot.spinRate),
+          ideal: i("spinRate"),
+        },
+        {
+          label: "Spin Axis",
+          value: fmtDir(shot.spinAxis) + "°",
+          status: s("spinAxis", shot.spinAxis),
+          ideal: i("spinAxis"),
+        },
+        {
+          label: "Back Spin",
+          value: fmt(shot.backSpin, 0, "rpm"),
+          status: s("backSpin", shot.backSpin),
+          ideal: i("backSpin"),
+        },
+        {
+          label: "Side Spin",
+          value: fmtDir(shot.sideSpin) + " rpm",
+          status: s("sideSpin", shot.sideSpin),
+          ideal: i("sideSpin"),
+        },
       ],
     },
     {
       title: "Club Data",
       cols: 4 as const,
       stats: [
-        { label: "Club Path",    value: fmtDir(shot.clubPath) + "°",   status: s("clubPath",    shot.clubPath),    ideal: i("clubPath")    },
-        { label: "Face Angle",   value: fmtDir(shot.faceAngle) + "°",  status: s("faceAngle",   shot.faceAngle),   ideal: i("faceAngle")   },
-        { label: "Attack Angle", value: fmt(shot.attackAngle, 1, "°"), status: s("attackAngle", shot.attackAngle), ideal: i("attackAngle") },
-        { label: "Dynamic Loft", value: fmt(shot.dynamicLoft, 1, "°"), status: s("dynamicLoft", shot.dynamicLoft), ideal: i("dynamicLoft") },
+        {
+          label: "Club Path",
+          value: fmtDir(shot.clubPath) + "°",
+          status: s("clubPath", shot.clubPath),
+          ideal: i("clubPath"),
+        },
+        {
+          label: "Face Angle",
+          value: fmtDir(shot.faceAngle) + "°",
+          status: s("faceAngle", shot.faceAngle),
+          ideal: i("faceAngle"),
+        },
+        {
+          label: "Attack Angle",
+          value: fmt(shot.attackAngle, 1, "°"),
+          status: s("attackAngle", shot.attackAngle),
+          ideal: i("attackAngle"),
+        },
+        {
+          label: "Dynamic Loft",
+          value: fmt(shot.dynamicLoft, 1, "°"),
+          status: s("dynamicLoft", shot.dynamicLoft),
+          ideal: i("dynamicLoft"),
+        },
       ],
     },
   ];
@@ -187,25 +297,29 @@ function buildGroups(shot: Shot, bagClub: BagClub | undefined) {
 export default function ShotPage() {
   const { selectedShot, setSelectedShot, analysis, hideOutliers } = useSession();
   const router = useRouter();
-  const [highlightMode, setHighlightMode] = useState<HighlightMode>(() =>
-    ((typeof window !== "undefined" && localStorage.getItem("highlightMode")) as HighlightMode) ?? "off"
+  const [highlightMode, setHighlightMode] = useState<HighlightMode>(
+    () =>
+      ((typeof window !== "undefined" && localStorage.getItem("highlightMode")) as HighlightMode) ??
+      "off"
   );
   const [profile] = useState(() => loadProfile());
   const [idealsViewOpen, setIdealsViewOpen] = useState(false);
 
   function cycleHighlight() {
-    const next = HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
+    const next =
+      HIGHLIGHT_CYCLE[(HIGHLIGHT_CYCLE.indexOf(highlightMode) + 1) % HIGHLIGHT_CYCLE.length];
     setHighlightMode(next);
     localStorage.setItem("highlightMode", next);
   }
 
   const arrayIdx = analysis ? analysis.shots.indexOf(selectedShot!) : -1;
   const prevShot = analysis && arrayIdx > 0 ? analysis.shots[arrayIdx - 1] : null;
-  const nextShot = analysis && arrayIdx < analysis.shots.length - 1 ? analysis.shots[arrayIdx + 1] : null;
+  const nextShot =
+    analysis && arrayIdx < analysis.shots.length - 1 ? analysis.shots[arrayIdx + 1] : null;
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft"  && prevShot) setSelectedShot(prevShot);
+      if (e.key === "ArrowLeft" && prevShot) setSelectedShot(prevShot);
       if (e.key === "ArrowRight" && nextShot) setSelectedShot(nextShot);
     }
     window.addEventListener("keydown", onKey);
@@ -221,7 +335,11 @@ export default function ShotPage() {
             icon={MousePointerClick}
             title="No shot selected"
             description="Select a shot from the shots table to view its details."
-            action={<Link href="/shots" className="text-xs text-primary underline">Go to shots</Link>}
+            action={
+              <Link href="/shots" className="text-xs text-primary underline">
+                Go to shots
+              </Link>
+            }
           />
         </main>
       </div>
@@ -233,7 +351,6 @@ export default function ShotPage() {
   const isPoorContact = analysis.poorContactShots.has(shot.index);
   const bagClub = findBagClub(shot.club, profile.bag);
   const groups = buildGroups(shot, bagClub);
-
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -259,8 +376,16 @@ export default function ShotPage() {
         <h1 className="text-sm font-semibold">
           {shot.club} · Shot #{shot.index}
         </h1>
-        {isOutlier && <Badge variant="outline" className="text-xs">Outlier</Badge>}
-        {isPoorContact && !isOutlier && <Badge variant="outline" className="text-xs">Poor contact</Badge>}
+        {isOutlier && (
+          <Badge variant="outline" className="text-xs">
+            Outlier
+          </Badge>
+        )}
+        {isPoorContact && !isOutlier && (
+          <Badge variant="outline" className="text-xs">
+            Poor contact
+          </Badge>
+        )}
         <span className="text-xs text-muted-foreground">
           {analysis.meta.date}
           {analysis.meta.place && ` · ${analysis.meta.place}`}
@@ -268,7 +393,10 @@ export default function ShotPage() {
         <CopyForAIButton
           className="ml-auto text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"
           getText={() => {
-            const flags = [...(isOutlier ? ["outlier"] : []), ...(isPoorContact ? ["poor contact"] : [])];
+            const flags = [
+              ...(isOutlier ? ["outlier"] : []),
+              ...(isPoorContact ? ["poor contact"] : []),
+            ];
             return buildCopyText(shot, groups, analysis!.meta, flags);
           }}
         />
@@ -314,11 +442,7 @@ export default function ShotPage() {
             {bagClub ? (
               <div className="flex items-center gap-2">
                 <HighlightToggle mode={highlightMode} onCycle={cycleHighlight} />
-                <Button
-                  onClick={() => setIdealsViewOpen(true)}
-                  variant="link"
-                  size="sm"
-                >
+                <Button onClick={() => setIdealsViewOpen(true)} variant="link" size="sm">
                   · {bagClub.label} ideals
                 </Button>
               </div>
@@ -347,21 +471,22 @@ export default function ShotPage() {
               const effectiveShots = hideOutliers
                 ? analysis.shots.filter((_, i) => !analysis.outlierIndices.has(i))
                 : analysis.shots;
-              const clubStats = recomputeClubStats(effectiveShots).find(c => c.club === shot.club);
+              const clubStats = recomputeClubStats(effectiveShots).find(
+                (c) => c.club === shot.club
+              );
               if (!clubStats) return null;
               return (
-                <FairwayView
-                  shots={effectiveShots}
-                  clubs={[clubStats]}
-                  highlightShot={shot}
-                />
+                <FairwayView shots={effectiveShots} clubs={[clubStats]} highlightShot={shot} />
               );
             })()}
           </div>
         </div>
       </main>
 
-      <IdealsViewModal club={idealsViewOpen ? bagClub ?? null : null} onClose={() => setIdealsViewOpen(false)} />
+      <IdealsViewModal
+        club={idealsViewOpen ? (bagClub ?? null) : null}
+        onClose={() => setIdealsViewOpen(false)}
+      />
     </div>
   );
 }

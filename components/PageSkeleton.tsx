@@ -4,10 +4,17 @@ function DashboardSkeleton() {
   return (
     <div className="p-6 space-y-6">
       {/* Club selector */}
-      <div className="flex gap-1"><Skeleton className="h-7 w-12" /><Skeleton className="h-7 w-16" /><Skeleton className="h-7 w-14" /><Skeleton className="h-7 w-12" /></div>
+      <div className="flex gap-1">
+        <Skeleton className="h-7 w-12" />
+        <Skeleton className="h-7 w-16" />
+        <Skeleton className="h-7 w-14" />
+        <Skeleton className="h-7 w-12" />
+      </div>
       {/* Stats cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-20 rounded-xl" />
+        ))}
       </div>
       {/* 2-col charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -34,11 +41,16 @@ function ShotsSkeleton() {
   return (
     <div className="p-6 space-y-3">
       {/* Controls row */}
-      <div className="flex gap-2"><Skeleton className="h-8 w-48" /><Skeleton className="h-8 w-24 ml-auto" /></div>
+      <div className="flex gap-2">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-8 w-24 ml-auto" />
+      </div>
       {/* Table header */}
       <Skeleton className="h-9 rounded-t-lg" />
       {/* Table rows */}
-      {Array.from({ length: 12 }).map((_, i) => <Skeleton key={i} className="h-10" />)}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <Skeleton key={i} className="h-10" />
+      ))}
     </div>
   );
 }
@@ -46,10 +58,14 @@ function ShotsSkeleton() {
 function BagSkeleton() {
   return (
     <div className="p-6 space-y-4">
-      <div className="flex gap-2"><Skeleton className="h-8 w-32 ml-auto" /></div>
+      <div className="flex gap-2">
+        <Skeleton className="h-8 w-32 ml-auto" />
+      </div>
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         <div className="flex-1 space-y-2 w-full">
-          {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-10 rounded-lg" />)}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-10 rounded-lg" />
+          ))}
         </div>
         <Skeleton className="w-full lg:w-72 h-96 rounded-xl shrink-0" />
       </div>
@@ -69,9 +85,9 @@ function CompareSkeleton() {
 
 export const PAGE_SKELETONS = {
   dashboard: DashboardSkeleton,
-  shots:     ShotsSkeleton,
-  bag:       BagSkeleton,
-  compare:   CompareSkeleton,
+  shots: ShotsSkeleton,
+  bag: BagSkeleton,
+  compare: CompareSkeleton,
 } as const;
 
 export type SkeletonPage = keyof typeof PAGE_SKELETONS;

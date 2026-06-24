@@ -42,12 +42,7 @@ function fmtDir(n: number): string {
   return `${n > 0 ? "R" : "L"}${Math.abs(n).toFixed(1)}°`;
 }
 
-export function FaceToPath({
-  launchDirection,
-  faceAngle,
-  clubPath,
-  club,
-}: Props) {
+export function FaceToPath({ launchDirection, faceAngle, clubPath, club }: Props) {
   const cfg = getConfig(club);
   const LINE = 150;
   const REF_Y = -20; // y of reference line / impact point
@@ -59,17 +54,13 @@ export function FaceToPath({
   const ballY = REF_Y - LINE * Math.sin(launchDirection * DEG);
 
   return (
-    <div aria-label={`Launch ${fmtDir(launchDirection)}, Face to Path ${fmtDir(facePath)}, Club Path ${fmtDir(clubPath)}`}>
+    <div
+      aria-label={`Launch ${fmtDir(launchDirection)}, Face to Path ${fmtDir(facePath)}, Club Path ${fmtDir(clubPath)}`}
+    >
       <svg viewBox="-200 -100 400 210" className="w-full">
         <defs>
           <filter id="drop-shadow-ftp">
-            <feDropShadow
-              dx="0"
-              dy="2"
-              stdDeviation="3"
-              floodColor="black"
-              floodOpacity="0.5"
-            />
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="black" floodOpacity="0.5" />
           </filter>
         </defs>
 
@@ -150,15 +141,21 @@ export function FaceToPath({
 
       <div className="grid grid-cols-3 text-center mt-2">
         <div>
-          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>Horizontal Launch</p>
+          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>
+            Horizontal Launch
+          </p>
           <p className="text-sm font-bold">{fmtDir(launchDirection)}</p>
         </div>
         <div>
-          <p className="text-xs font-bold" style={{ color: "#eab308" }}>Face to Club Path</p>
+          <p className="text-xs font-bold" style={{ color: "#eab308" }}>
+            Face to Club Path
+          </p>
           <p className="text-sm font-bold">{fmtDir(facePath)}</p>
         </div>
         <div>
-          <p className="text-xs font-bold" style={{ color: "#f97316" }}>Club Path</p>
+          <p className="text-xs font-bold" style={{ color: "#f97316" }}>
+            Club Path
+          </p>
           <p className="text-sm font-bold">{fmtDir(clubPath)}</p>
         </div>
       </div>

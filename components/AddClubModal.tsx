@@ -2,28 +2,32 @@
 
 import { useState } from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { BagClub } from "@/lib/profile";
 
 const CLUB_TYPES = ["Driver", "Wood", "Hybrid", "Iron", "Wedge", "Putter"] as const;
-type ClubType = typeof CLUB_TYPES[number];
+type ClubType = (typeof CLUB_TYPES)[number];
 
 const SUB_OPTIONS: Record<ClubType, string[]> = {
   Driver: ["Driver", "Mini Driver"],
-  Wood:   ["3 Wood", "5 Wood", "7 Wood", "9 Wood"],
+  Wood: ["3 Wood", "5 Wood", "7 Wood", "9 Wood"],
   Hybrid: ["2 Hybrid", "3 Hybrid", "4 Hybrid", "5 Hybrid", "6 Hybrid"],
-  Iron:   ["2 Iron", "3 Iron", "4 Iron", "5 Iron", "6 Iron", "7 Iron", "8 Iron", "9 Iron"],
-  Wedge:  ["Pitching Wedge", "Gap Wedge", "Sand Wedge", "Lob Wedge"],
+  Iron: ["2 Iron", "3 Iron", "4 Iron", "5 Iron", "6 Iron", "7 Iron", "8 Iron", "9 Iron"],
+  Wedge: ["Pitching Wedge", "Gap Wedge", "Sand Wedge", "Lob Wedge"],
   Putter: ["Putter"],
 };
 
 function detectFromLabel(label: string): { type: ClubType; sub: string } | null {
   for (const type of CLUB_TYPES) {
     const sub = SUB_OPTIONS[type].find(
-      s => s.toLowerCase().replace(/\s+/g, "") === label.toLowerCase().replace(/\s+/g, "")
+      (s) => s.toLowerCase().replace(/\s+/g, "") === label.toLowerCase().replace(/\s+/g, "")
     );
     if (sub) return { type, sub };
   }
@@ -69,7 +73,12 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => { if (!o) handleClose(); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) handleClose();
+      }}
+    >
       <DialogContent className="max-w-sm top-[10vh] translate-y-0">
         <DialogHeader>
           <DialogTitle>Add club</DialogTitle>
@@ -77,7 +86,7 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
 
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2">
-            {CLUB_TYPES.map(type => (
+            {CLUB_TYPES.map((type) => (
               <Button
                 key={type}
                 onClick={() => selectType(type)}
@@ -95,7 +104,7 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
                 {clubType}
               </p>
               <div className="flex flex-wrap gap-2">
-                {SUB_OPTIONS[clubType].map(name => (
+                {SUB_OPTIONS[clubType].map((name) => (
                   <Button
                     key={name}
                     onClick={() => selectSub(name)}
@@ -115,16 +124,20 @@ export function AddClubModal({ open, initialLabel, onClose }: Props) {
             </label>
             <Input
               value={makeModel}
-              onChange={e => setMakeModel(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleAdd()}
+              onChange={(e) => setMakeModel(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAdd()}
               placeholder="e.g. TaylorMade P790"
             />
           </div>
         </div>
 
         <DialogFooter>
-          <Button onClick={handleClose} variant="outline">Cancel</Button>
-          <Button onClick={handleAdd} disabled={!label.trim()}>Add</Button>
+          <Button onClick={handleClose} variant="outline">
+            Cancel
+          </Button>
+          <Button onClick={handleAdd} disabled={!label.trim()}>
+            Add
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

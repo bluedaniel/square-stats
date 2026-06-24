@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 
 export function useOutliers() {
-  const [hideOutliers, setHideOutliers] = useState(() =>
-    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
+  const [hideOutliers, setHideOutliers] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
   );
 
   useEffect(() => {

@@ -18,7 +18,10 @@ export function CopyForAIButton({ getText, className }: Props) {
   return (
     <button
       onClick={handleClick}
-      className={className ?? "text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"}
+      className={
+        className ??
+        "text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"
+      }
     >
       <span className="inline-flex items-center gap-1.5">
         <Copy size={12} />

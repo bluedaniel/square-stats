@@ -2,8 +2,14 @@
 
 import { useMemo, useState } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
 } from "recharts";
 import { NavBar } from "@/components/NavBar";
 import { ClubSelector } from "@/components/ClubSelector";
@@ -16,8 +22,14 @@ import type { Session } from "@/contexts/SessionContext";
 import { recomputeClubStats } from "@/utils/analyze";
 
 const SESSION_COLORS = [
-  "#3b82f6", "#22c55e", "#f97316", "#ef4444",
-  "#8b5cf6", "#ec4899", "#14b8a6", "#eab308",
+  "#3b82f6",
+  "#22c55e",
+  "#f97316",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#eab308",
 ];
 
 function shortName(s: Session) {
@@ -25,41 +37,52 @@ function shortName(s: Session) {
 }
 
 function mean(nums: number[]) {
-  const valid = nums.filter(n => n > 0);
+  const valid = nums.filter((n) => n > 0);
   return valid.length ? valid.reduce((a, b) => a + b, 0) / valid.length : 0;
 }
 
 const OVERVIEW_METRICS = [
-  { key: "shots",    label: "Shots",      fmt: (n: number) => String(Math.round(n)) },
-  { key: "carry",    label: "Avg Carry",  fmt: (n: number) => `${Math.round(n)} yd` },
-  { key: "speed",    label: "Ball Speed", fmt: (n: number) => n > 0 ? `${n.toFixed(0)} mph` : "—" },
-  { key: "spin",     label: "Spin Rate",  fmt: (n: number) => n > 0 ? `${Math.round(n)} rpm` : "—" },
-  { key: "smash",    label: "Smash",      fmt: (n: number) => n > 0 ? n.toFixed(2) : "—" },
-  { key: "offline",  label: "Avg Offline",fmt: (n: number) => {
-    if (n === 0) return "0.0 yd";
-    return `${n > 0 ? "R" : "L"}${Math.abs(n).toFixed(1)} yd`;
-  }},
+  { key: "shots", label: "Shots", fmt: (n: number) => String(Math.round(n)) },
+  { key: "carry", label: "Avg Carry", fmt: (n: number) => `${Math.round(n)} yd` },
+  { key: "speed", label: "Ball Speed", fmt: (n: number) => (n > 0 ? `${n.toFixed(0)} mph` : "—") },
+  { key: "spin", label: "Spin Rate", fmt: (n: number) => (n > 0 ? `${Math.round(n)} rpm` : "—") },
+  { key: "smash", label: "Smash", fmt: (n: number) => (n > 0 ? n.toFixed(2) : "—") },
+  {
+    key: "offline",
+    label: "Avg Offline",
+    fmt: (n: number) => {
+      if (n === 0) return "0.0 yd";
+      return `${n > 0 ? "R" : "L"}${Math.abs(n).toFixed(1)} yd`;
+    },
+  },
 ] as const;
 
-type MetricKey = typeof OVERVIEW_METRICS[number]["key"];
+type MetricKey = (typeof OVERVIEW_METRICS)[number]["key"];
 
 export default function ComparePage() {
   const { sessions, hideOutliers } = useSession();
 
-  const effectiveSessions = useMemo(() =>
-    hideOutliers
-      ? sessions.map(s => {
-          const shots = s.analysis.shots.filter((_, i) => !s.analysis.outlierIndices.has(i));
-          return { ...s, analysis: { ...s.analysis, shots, clubStats: recomputeClubStats(shots) } };
-        })
-      : sessions,
-  [sessions, hideOutliers]);
+  const effectiveSessions = useMemo(
+    () =>
+      hideOutliers
+        ? sessions.map((s) => {
+            const shots = s.analysis.shots.filter((_, i) => !s.analysis.outlierIndices.has(i));
+            return {
+              ...s,
+              analysis: { ...s.analysis, shots, clubStats: recomputeClubStats(shots) },
+            };
+          })
+        : sessions,
+    [sessions, hideOutliers]
+  );
 
   if (sessions.length === 0) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <NavBar />
-        <div className="flex-1 overflow-hidden"><NoSessionState page="compare" /></div>
+        <div className="flex-1 overflow-hidden">
+          <NoSessionState page="compare" />
+        </div>
       </div>
     );
   }
@@ -84,35 +107,54 @@ export default function ComparePage() {
         ) : (
           <CompareContent sessions={effectiveSessions} />
         )}
-
       </main>
     </div>
   );
 }
 
 const CHART_METRICS = [
-  { key: "avgCarry",     label: "Carry",      unit: " yd",  fmt: (n: number) => `${Math.round(n)} yd` },
-  { key: "avgBallSpeed", label: "Ball Speed", unit: " mph", fmt: (n: number) => `${n.toFixed(0)} mph` },
-  { key: "avgSpinRate",  label: "Spin Rate",  unit: " rpm", fmt: (n: number) => `${Math.round(n)} rpm` },
-  { key: "avgSmash",     label: "Smash",      unit: "",     fmt: (n: number) => n.toFixed(2) },
-  { key: "avgOffline",   label: "Offline",    unit: " yd",  fmt: (n: number) => `${n > 0 ? "R" : n < 0 ? "L" : ""}${Math.abs(n).toFixed(1)} yd` },
+  { key: "avgCarry", label: "Carry", unit: " yd", fmt: (n: number) => `${Math.round(n)} yd` },
+  {
+    key: "avgBallSpeed",
+    label: "Ball Speed",
+    unit: " mph",
+    fmt: (n: number) => `${n.toFixed(0)} mph`,
+  },
+  {
+    key: "avgSpinRate",
+    label: "Spin Rate",
+    unit: " rpm",
+    fmt: (n: number) => `${Math.round(n)} rpm`,
+  },
+  { key: "avgSmash", label: "Smash", unit: "", fmt: (n: number) => n.toFixed(2) },
+  {
+    key: "avgOffline",
+    label: "Offline",
+    unit: " yd",
+    fmt: (n: number) => `${n > 0 ? "R" : n < 0 ? "L" : ""}${Math.abs(n).toFixed(1)} yd`,
+  },
 ] as const;
 
-type ChartMetricKey = typeof CHART_METRICS[number]["key"];
+type ChartMetricKey = (typeof CHART_METRICS)[number]["key"];
 
 function buildCompareAIText(sessions: Session[], commonClubs: string[]): string {
   const lines: string[] = ["Session comparison", ""];
   for (const s of sessions) {
-    lines.push(`Session: ${s.filename} (${s.analysis.meta.date}${s.analysis.meta.place ? ` · ${s.analysis.meta.place}` : ""})`);
+    lines.push(
+      `Session: ${s.filename} (${s.analysis.meta.date}${s.analysis.meta.place ? ` · ${s.analysis.meta.place}` : ""})`
+    );
   }
   lines.push("", "Per-club averages (carry yd / ball speed mph / spin rpm / smash / offline yd)");
-  const header = ["Club", ...sessions.map(s => s.filename.replace(/\.csv$/i, ""))].join("\t");
+  const header = ["Club", ...sessions.map((s) => s.filename.replace(/\.csv$/i, ""))].join("\t");
   lines.push(header);
   for (const club of commonClubs) {
-    const cols = sessions.map(s => {
-      const st = s.analysis.clubStats.find(c => c.club === club);
+    const cols = sessions.map((s) => {
+      const st = s.analysis.clubStats.find((c) => c.club === club);
       if (!st) return "—";
-      const off = st.avgOffline === 0 ? "0.0" : `${st.avgOffline > 0 ? "R" : "L"}${Math.abs(st.avgOffline).toFixed(1)}`;
+      const off =
+        st.avgOffline === 0
+          ? "0.0"
+          : `${st.avgOffline > 0 ? "R" : "L"}${Math.abs(st.avgOffline).toFixed(1)}`;
       return `${Math.round(st.avgCarry)} / ${st.avgBallSpeed > 0 ? st.avgBallSpeed.toFixed(0) : "—"} / ${st.avgSpinRate > 0 ? Math.round(st.avgSpinRate) : "—"} / ${st.avgSmash > 0 ? st.avgSmash.toFixed(2) : "—"} / ${off}`;
     });
     lines.push([club, ...cols].join("\t"));
@@ -138,56 +180,65 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
       .filter(([, n]) => n >= 2)
       .map(([club]) => club)
       .sort((a, b) => {
-        const maxA = Math.max(...sessions.map(s => s.analysis.clubStats.find(c => c.club === a)?.avgCarry ?? 0));
-        const maxB = Math.max(...sessions.map(s => s.analysis.clubStats.find(c => c.club === b)?.avgCarry ?? 0));
+        const maxA = Math.max(
+          ...sessions.map((s) => s.analysis.clubStats.find((c) => c.club === a)?.avgCarry ?? 0)
+        );
+        const maxB = Math.max(
+          ...sessions.map((s) => s.analysis.clubStats.find((c) => c.club === b)?.avgCarry ?? 0)
+        );
         return maxB - maxA;
       });
   }, [sessions]);
 
   // Overview stats — per-club when filtered, all shots when "All"
-  const overviewRows = useMemo(() =>
-    sessions.map(s => {
-      if (selectedClub !== "All") {
-        const stat = s.analysis.clubStats.find(c => c.club === selectedClub);
+  const overviewRows = useMemo(
+    () =>
+      sessions.map((s) => {
+        if (selectedClub !== "All") {
+          const stat = s.analysis.clubStats.find((c) => c.club === selectedClub);
+          return {
+            session: s,
+            shots: stat?.count ?? 0,
+            carry: stat?.avgCarry ?? 0,
+            speed: stat?.avgBallSpeed ?? 0,
+            spin: stat?.avgSpinRate ?? 0,
+            smash: stat?.avgSmash ?? 0,
+            offline: stat?.avgOffline ?? 0,
+          };
+        }
+        const shots = s.analysis.shots;
         return {
           session: s,
-          shots:   stat?.count ?? 0,
-          carry:   stat?.avgCarry ?? 0,
-          speed:   stat?.avgBallSpeed ?? 0,
-          spin:    stat?.avgSpinRate ?? 0,
-          smash:   stat?.avgSmash ?? 0,
-          offline: stat?.avgOffline ?? 0,
+          shots: shots.length,
+          carry: mean(shots.map((sh) => sh.carry)),
+          speed: mean(shots.map((sh) => sh.ballSpeed)),
+          spin: mean(shots.map((sh) => sh.spinRate)),
+          smash: mean(shots.map((sh) => sh.smashFactor)),
+          offline: shots.reduce((a, sh) => a + sh.offline, 0) / (shots.length || 1),
         };
-      }
-      const shots = s.analysis.shots;
-      return {
-        session: s,
-        shots:   shots.length,
-        carry:   mean(shots.map(sh => sh.carry)),
-        speed:   mean(shots.map(sh => sh.ballSpeed)),
-        spin:    mean(shots.map(sh => sh.spinRate)),
-        smash:   mean(shots.map(sh => sh.smashFactor)),
-        offline: shots.reduce((a, sh) => a + sh.offline, 0) / (shots.length || 1),
-      };
-    }),
-  [sessions, selectedClub]);
+      }),
+    [sessions, selectedClub]
+  );
 
   // Sort sessions by date ascending for the X axis
-  const sortedSessions = useMemo(() =>
-    [...sessions].sort((a, b) => a.analysis.meta.date.localeCompare(b.analysis.meta.date)),
-  [sessions]);
+  const sortedSessions = useMemo(
+    () => [...sessions].sort((a, b) => a.analysis.meta.date.localeCompare(b.analysis.meta.date)),
+    [sessions]
+  );
 
   // One entry per session (date), one key per club
-  const lineChartData = useMemo(() =>
-    sortedSessions.map(s => {
-      const entry: Record<string, string | number> = { date: s.analysis.meta.date };
-      for (const club of commonClubs) {
-        const stat = s.analysis.clubStats.find(c => c.club === club);
-        if (stat && stat.count >= 2) entry[club] = Number(stat[chartMetric].toFixed(2));
-      }
-      return entry;
-    }),
-  [sortedSessions, commonClubs, chartMetric]);
+  const lineChartData = useMemo(
+    () =>
+      sortedSessions.map((s) => {
+        const entry: Record<string, string | number> = { date: s.analysis.meta.date };
+        for (const club of commonClubs) {
+          const stat = s.analysis.clubStats.find((c) => c.club === club);
+          if (stat && stat.count >= 2) entry[club] = Number(stat[chartMetric].toFixed(2));
+        }
+        return entry;
+      }),
+    [sortedSessions, commonClubs, chartMetric]
+  );
 
   const selectorClubs = ["All", ...commonClubs];
 
@@ -203,14 +254,22 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
 
       {/* Overview */}
       <section>
-        <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Overview</h2>
+        <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">
+          Overview
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left px-3 py-2 text-xs font-medium text-muted-foreground w-32">Metric</th>
+                <th className="text-left px-3 py-2 text-xs font-medium text-muted-foreground w-32">
+                  Metric
+                </th>
                 {sessions.map((s, i) => (
-                  <th key={s.id} className="text-left px-3 py-2" style={{ color: SESSION_COLORS[i % SESSION_COLORS.length] }}>
+                  <th
+                    key={s.id}
+                    className="text-left px-3 py-2"
+                    style={{ color: SESSION_COLORS[i % SESSION_COLORS.length] }}
+                  >
                     <div className="text-xs font-semibold">{shortName(s)}</div>
                     <div className="text-xs font-normal opacity-60">{s.analysis.meta.date}</div>
                   </th>
@@ -219,9 +278,12 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
             </thead>
             <tbody>
               {OVERVIEW_METRICS.map(({ key, label, fmt }) => (
-                <tr key={key} className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors">
+                <tr
+                  key={key}
+                  className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors"
+                >
                   <td className="px-3 py-2 text-xs text-muted-foreground font-medium">{label}</td>
-                  {overviewRows.map(row => (
+                  {overviewRows.map((row) => (
                     <td key={row.session.id} className="px-3 py-2 tabular-nums font-medium">
                       {fmt(row[key as MetricKey] as number)}
                     </td>
@@ -237,9 +299,11 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
       {commonClubs.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">By Club</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              By Club
+            </h2>
             <div className="flex rounded-lg border border-border overflow-hidden text-xs">
-              {CHART_METRICS.map(m => (
+              {CHART_METRICS.map((m) => (
                 <button
                   key={m.key}
                   onClick={() => setChartMetric(m.key)}
@@ -259,22 +323,19 @@ function CompareContent({ sessions }: { sessions: Session[] }) {
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={lineChartData} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
               <CartesianGrid stroke="currentColor" strokeOpacity={0.07} />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-              />
+              <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
               <YAxis
                 tick={{ fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={v => `${v}${CHART_METRICS.find(m => m.key === chartMetric)?.unit ?? ""}`}
+                tickFormatter={(v) =>
+                  `${v}${CHART_METRICS.find((m) => m.key === chartMetric)?.unit ?? ""}`
+                }
                 width={56}
               />
               <Tooltip
                 formatter={(value: unknown, name: unknown) => {
-                  const metric = CHART_METRICS.find(m => m.key === chartMetric);
+                  const metric = CHART_METRICS.find((m) => m.key === chartMetric);
                   return [metric ? metric.fmt(value as number) : String(value), name as string];
                 }}
                 contentStyle={{ fontSize: 12 }}
@@ -308,7 +369,7 @@ function DeltaTable({ sessions, clubs }: { sessions: Session[]; clubs: string[] 
   const [s1, s2] = sessions;
 
   function stat(session: Session, club: string) {
-    return session.analysis.clubStats.find(c => c.club === club);
+    return session.analysis.clubStats.find((c) => c.club === club);
   }
 
   function delta(a: number, b: number) {
@@ -316,14 +377,17 @@ function DeltaTable({ sessions, clubs }: { sessions: Session[]; clubs: string[] 
     if (Math.abs(d) < 0.5) return <span className="text-muted-foreground">—</span>;
     return (
       <span className={d > 0 ? "text-green-500" : "text-red-500"}>
-        {d > 0 ? "+" : ""}{Math.round(d)}
+        {d > 0 ? "+" : ""}
+        {Math.round(d)}
       </span>
     );
   }
 
   return (
     <section>
-      <h2 className="text-sm font-semibold mb-1 text-muted-foreground uppercase tracking-wide">Delta</h2>
+      <h2 className="text-sm font-semibold mb-1 text-muted-foreground uppercase tracking-wide">
+        Delta
+      </h2>
       <p className="text-xs text-muted-foreground mb-3">
         <span style={{ color: SESSION_COLORS[0] }}>{shortName(s1)}</span>
         {" → "}
@@ -333,24 +397,38 @@ function DeltaTable({ sessions, clubs }: { sessions: Session[]; clubs: string[] 
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              {["Club", "Carry", "±Carry", "Ball Speed", "Spin", "Smash"].map(h => (
-                <th key={h} className="text-left px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap">{h}</th>
+              {["Club", "Carry", "±Carry", "Ball Speed", "Spin", "Smash"].map((h) => (
+                <th
+                  key={h}
+                  className="text-left px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap"
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {clubs.map(club => {
+            {clubs.map((club) => {
               const a = stat(s1, club);
               const b = stat(s2, club);
               if (!a || !b) return null;
               return (
-                <tr key={club} className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors">
+                <tr
+                  key={club}
+                  className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors"
+                >
                   <td className="px-3 py-2 font-medium">{club}</td>
                   <td className="px-3 py-2 tabular-nums">{delta(a.avgCarry, b.avgCarry)}</td>
                   <td className="px-3 py-2 tabular-nums">{delta(a.stdDevCarry, b.stdDevCarry)}</td>
-                  <td className="px-3 py-2 tabular-nums">{delta(a.avgBallSpeed, b.avgBallSpeed)}</td>
+                  <td className="px-3 py-2 tabular-nums">
+                    {delta(a.avgBallSpeed, b.avgBallSpeed)}
+                  </td>
                   <td className="px-3 py-2 tabular-nums">{delta(a.avgSpinRate, b.avgSpinRate)}</td>
-                  <td className="px-3 py-2 tabular-nums">{b.avgSmash > 0 && a.avgSmash > 0 ? delta(a.avgSmash * 100, b.avgSmash * 100) : "—"}</td>
+                  <td className="px-3 py-2 tabular-nums">
+                    {b.avgSmash > 0 && a.avgSmash > 0
+                      ? delta(a.avgSmash * 100, b.avgSmash * 100)
+                      : "—"}
+                  </td>
                 </tr>
               );
             })}

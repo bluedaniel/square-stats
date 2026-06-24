@@ -9,7 +9,7 @@ interface Props {
 export function ClubSelector({ clubs, selected, onChange }: Props) {
   return (
     <div className="flex items-center bg-muted rounded-lg p-0.5 gap-0.5 overflow-x-auto w-fit mx-auto">
-      {clubs.map(club => (
+      {clubs.map((club) => (
         <button
           key={club}
           onClick={() => onChange(club)}

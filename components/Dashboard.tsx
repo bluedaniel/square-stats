@@ -37,16 +37,11 @@ export function Dashboard({ analysis, filename }: Props) {
 
   const filteredShots = useMemo(
     () =>
-      selectedClub === "All"
-        ? visibleShots
-        : visibleShots.filter((s) => s.club === selectedClub),
+      selectedClub === "All" ? visibleShots : visibleShots.filter((s) => s.club === selectedClub),
     [selectedClub, visibleShots]
   );
 
-  const visibleClubStats = useMemo(
-    () => recomputeClubStats(visibleShots),
-    [visibleShots]
-  );
+  const visibleClubStats = useMemo(() => recomputeClubStats(visibleShots), [visibleShots]);
 
   const outlierCount = analysis.outlierIndices.size;
 
@@ -55,11 +50,7 @@ export function Dashboard({ analysis, filename }: Props) {
       <NavBar />
 
       <div className="border-b px-6 py-2">
-        <SessionMeta
-          meta={analysis.meta}
-          filename={filename}
-          outlierCount={outlierCount}
-        />
+        <SessionMeta meta={analysis.meta} filename={filename} outlierCount={outlierCount} />
       </div>
 
       <main className="p-6 space-y-6">

@@ -24,8 +24,8 @@ export function DistanceHistogram({ shots }: Props) {
   const { mutedForeground, border } = useChartTheme();
   const bins = buildCarryHistogram(shots);
   const avgCarry = shots.reduce((s, sh) => s + sh.carry, 0) / (shots.length || 1);
-  const maxCount = Math.max(...bins.map(b => b.count), 1);
-  const avgBin = bins.find(b => avgCarry >= b.binStart && avgCarry < b.binStart + 5)?.range;
+  const maxCount = Math.max(...bins.map((b) => b.count), 1);
+  const avgBin = bins.find((b) => avgCarry >= b.binStart && avgCarry < b.binStart + 5)?.range;
 
   return (
     <Card>
@@ -35,16 +35,28 @@ export function DistanceHistogram({ shots }: Props) {
       </CardHeader>
       <CardContent>
         <div className="relative">
-          <div className="absolute pointer-events-none border-l border-b border-border" style={{ left: 28, right: 16, top: 0, bottom: 38 }} />
+          <div
+            className="absolute pointer-events-none border-l border-b border-border"
+            style={{ left: 28, right: 16, top: 0, bottom: 38 }}
+          />
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={bins} margin={{ top: 8, right: 16, bottom: 8, left: 0 }} barCategoryGap="20%">
+            <BarChart
+              data={bins}
+              margin={{ top: 8, right: 16, bottom: 8, left: 0 }}
+              barCategoryGap="20%"
+            >
               <defs>
                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.95} />
                   <stop offset="100%" stopColor="#6366f1" stopOpacity={0.7} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={border} strokeOpacity={0.6} vertical={false} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke={border}
+                strokeOpacity={0.6}
+                vertical={false}
+              />
               <XAxis
                 dataKey="range"
                 tick={{ fontSize: 10, fill: mutedForeground }}
@@ -67,8 +79,12 @@ export function DistanceHistogram({ shots }: Props) {
                   return (
                     <div className="bg-popover border border-border rounded-lg p-2.5 text-xs shadow-lg">
                       <p className="font-medium">{b.range} yd</p>
-                      <p className="text-muted-foreground">{b.count} shot{b.count !== 1 ? "s" : ""}</p>
-                      <p className="text-muted-foreground">{((b.count / shots.length) * 100).toFixed(0)}%</p>
+                      <p className="text-muted-foreground">
+                        {b.count} shot{b.count !== 1 ? "s" : ""}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {((b.count / shots.length) * 100).toFixed(0)}%
+                      </p>
                     </div>
                   );
                 }}

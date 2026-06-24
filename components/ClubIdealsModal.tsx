@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  CLUB_STAT_KEYS, CLUB_STAT_META, getDefaultIdeals,
-  type ClubStatKey, type IdealRange, type BagClub, type Handicap,
+  CLUB_STAT_KEYS,
+  CLUB_STAT_META,
+  getDefaultIdeals,
+  type ClubStatKey,
+  type IdealRange,
+  type BagClub,
+  type Handicap,
 } from "@/lib/profile";
 
 interface Props {
@@ -18,10 +27,18 @@ interface Props {
 }
 
 function buildPrompt(club: BagClub, handicap: Handicap | ""): string {
-  const statLines = CLUB_STAT_KEYS.map(key => {
+  const statLines = CLUB_STAT_KEYS.map((key) => {
     const { label, unit } = CLUB_STAT_META[key];
     const u = unit ? ` (${unit})` : "";
-    const dir = ["offline", "launchDirection", "spinAxis", "sideSpin", "clubPath", "faceAngle", "impactHorizontal"].includes(key)
+    const dir = [
+      "offline",
+      "launchDirection",
+      "spinAxis",
+      "sideSpin",
+      "clubPath",
+      "faceAngle",
+      "impactHorizontal",
+    ].includes(key)
       ? " — directional: positive = right/toe, negative = left/heel"
       : "";
     return `  "${key}": { "min": ?, "max": ? }  // ${label}${u}${dir}`;
@@ -38,7 +55,9 @@ ${statLines}
 }`;
 }
 
-function parsePaste(text: string): Partial<Record<ClubStatKey, { min: string; max: string }>> | string {
+function parsePaste(
+  text: string
+): Partial<Record<ClubStatKey, { min: string; max: string }>> | string {
   const cleaned = text.replace(/```(?:json)?\n?/g, "").trim();
   let parsed: unknown;
   try {
@@ -64,23 +83,28 @@ function parsePaste(text: string): Partial<Record<ClubStatKey, { min: string; ma
 
 export function ClubIdealsModal({ club, handicap, onClose }: Props) {
   const [mode, setMode] = useState<"ai" | "manual">("ai");
-  const [draft, setDraft] = useState<Partial<Record<ClubStatKey, { min: string; max: string }>>>(() => {
-    if (!club) return {};
-    const defaults = getDefaultIdeals(club.label, handicap);
-    const init: Partial<Record<ClubStatKey, { min: string; max: string }>> = {};
-    for (const key of CLUB_STAT_KEYS) {
-      const r = club.ideals[key] ?? defaults[key];
-      init[key] = { min: r?.min != null ? String(r.min) : "", max: r?.max != null ? String(r.max) : "" };
+  const [draft, setDraft] = useState<Partial<Record<ClubStatKey, { min: string; max: string }>>>(
+    () => {
+      if (!club) return {};
+      const defaults = getDefaultIdeals(club.label, handicap);
+      const init: Partial<Record<ClubStatKey, { min: string; max: string }>> = {};
+      for (const key of CLUB_STAT_KEYS) {
+        const r = club.ideals[key] ?? defaults[key];
+        init[key] = {
+          min: r?.min != null ? String(r.min) : "",
+          max: r?.max != null ? String(r.max) : "",
+        };
+      }
+      return init;
     }
-    return init;
-  });
+  );
 
   const [pasteText, setPasteText] = useState("");
   const [parseError, setParseError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   function setField(key: ClubStatKey, field: "min" | "max", val: string) {
-    setDraft(d => ({ ...d, [key]: { ...d[key], [field]: val } }));
+    setDraft((d) => ({ ...d, [key]: { ...d[key], [field]: val } }));
   }
 
   function handleSave() {
@@ -88,7 +112,8 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
     for (const key of CLUB_STAT_KEYS) {
       const min = parseFloat(draft[key]?.min ?? "");
       const max = parseFloat(draft[key]?.max ?? "");
-      const hasMin = !isNaN(min), hasMax = !isNaN(max);
+      const hasMin = !isNaN(min),
+        hasMax = !isNaN(max);
       if (hasMin || hasMax) result[key] = { ...(hasMin && { min }), ...(hasMax && { max }) };
     }
     onClose(result);
@@ -108,7 +133,7 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
       return;
     }
     setParseError(null);
-    setDraft(d => {
+    setDraft((d) => {
       const next = { ...d };
       for (const key of CLUB_STAT_KEYS) {
         if (result[key]) next[key] = result[key]!;
@@ -122,7 +147,12 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
   if (!club) return null;
 
   return (
-    <Dialog open={!!club} onOpenChange={o => { if (!o) onClose(null); }}>
+    <Dialog
+      open={!!club}
+      onOpenChange={(o) => {
+        if (!o) onClose(null);
+      }}
+    >
       <DialogContent className="max-w-sm max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{club.label} ideals</DialogTitle>
@@ -132,7 +162,9 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">1. Copy this prompt into ChatGPT or Claude</p>
+                <p className="text-xs text-muted-foreground">
+                  1. Copy this prompt into ChatGPT or Claude
+                </p>
                 <Button onClick={handleCopy} variant="outline" size="xs">
                   {copied ? "Copied!" : "Copy"}
                 </Button>
@@ -149,14 +181,15 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
               <p className="text-xs text-muted-foreground">2. Paste the response here</p>
               <textarea
                 value={pasteText}
-                onChange={e => { setPasteText(e.target.value); setParseError(null); }}
+                onChange={(e) => {
+                  setPasteText(e.target.value);
+                  setParseError(null);
+                }}
                 placeholder="Paste JSON response…"
                 rows={6}
                 className="w-full text-xs font-mono bg-background rounded p-2 resize-none border border-border"
               />
-              {parseError && (
-                <p className="text-xs text-destructive">{parseError}</p>
-              )}
+              {parseError && <p className="text-xs text-destructive">{parseError}</p>}
             </div>
 
             <div className="flex items-center justify-between">
@@ -181,25 +214,28 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
               <p className="text-xs text-muted-foreground text-center">Min</p>
               <p className="text-xs text-muted-foreground text-center">Max</p>
 
-              {CLUB_STAT_KEYS.map(key => {
+              {CLUB_STAT_KEYS.map((key) => {
                 const { label, unit } = CLUB_STAT_META[key];
                 return (
                   <>
                     <label key={`${key}-label`} className="text-sm">
-                      {label}{unit ? <span className="text-muted-foreground text-xs ml-1">{unit}</span> : null}
+                      {label}
+                      {unit ? (
+                        <span className="text-muted-foreground text-xs ml-1">{unit}</span>
+                      ) : null}
                     </label>
                     <Input
                       key={`${key}-min`}
                       type="number"
                       value={draft[key]?.min ?? ""}
-                      onChange={e => setField(key, "min", e.target.value)}
+                      onChange={(e) => setField(key, "min", e.target.value)}
                       className="h-8 text-sm text-center px-2"
                     />
                     <Input
                       key={`${key}-max`}
                       type="number"
                       value={draft[key]?.max ?? ""}
-                      onChange={e => setField(key, "max", e.target.value)}
+                      onChange={(e) => setField(key, "max", e.target.value)}
                       className="h-8 text-sm text-center px-2"
                     />
                   </>
@@ -208,7 +244,9 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
             </div>
 
             <DialogFooter>
-              <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
+              <Button onClick={() => onClose(null)} variant="outline">
+                Cancel
+              </Button>
               <Button onClick={handleSave}>Save</Button>
             </DialogFooter>
           </div>
@@ -216,7 +254,9 @@ export function ClubIdealsModal({ club, handicap, onClose }: Props) {
 
         {mode === "ai" && (
           <DialogFooter>
-            <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
+            <Button onClick={() => onClose(null)} variant="outline">
+              Cancel
+            </Button>
           </DialogFooter>
         )}
       </DialogContent>

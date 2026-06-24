@@ -33,9 +33,7 @@ export function detectOutliers(shots: Shot[]): Set<number> {
   const clubs = [...new Set(shots.map((s) => s.club))];
 
   for (const club of clubs) {
-    const entries = shots
-      .map((s, i) => ({ s, i }))
-      .filter(({ s }) => s.club === club);
+    const entries = shots.map((s, i) => ({ s, i })).filter(({ s }) => s.club === club);
 
     if (entries.length < 4) continue;
 
@@ -57,7 +55,10 @@ export function detectOutliers(shots: Shot[]): Set<number> {
 export function recomputeClubStats(shots: Shot[]): ClubStats[] {
   const clubs = [...new Set(shots.map((s) => s.club))];
   return clubs.map((club) =>
-    statsForClub(club, shots.filter((s) => s.club === club))
+    statsForClub(
+      club,
+      shots.filter((s) => s.club === club)
+    )
   );
 }
 
@@ -82,7 +83,10 @@ function statsForClub(club: string, shots: Shot[]): ClubStats {
 export function analyze(meta: SessionMeta, shots: Shot[]): SessionAnalysis {
   const clubs = [...new Set(shots.map((s) => s.club))];
   const clubStats = clubs.map((club) =>
-    statsForClub(club, shots.filter((s) => s.club === club))
+    statsForClub(
+      club,
+      shots.filter((s) => s.club === club)
+    )
   );
 
   const shotsWithSmash = shots.filter((s) => s.smashFactor > 0);
@@ -94,9 +98,7 @@ export function analyze(meta: SessionMeta, shots: Shot[]): SessionAnalysis {
   );
 
   const poorContactShots = new Set(
-    shotsWithSmash
-      .filter((s) => s.smashFactor < sessionMedianSmash - 0.1)
-      .map((s) => s.index)
+    shotsWithSmash.filter((s) => s.smashFactor < sessionMedianSmash - 0.1).map((s) => s.index)
   );
 
   const outlierIndices = detectOutliers(shots);
@@ -127,7 +129,7 @@ export function buildCarryHistogram(
 export function buildRollingAvg(
   shots: Shot[],
   getValue: (s: Shot) => number,
-  window = 5,
+  window = 5
 ): { index: number; value: number; rolling: number }[] {
   return shots.map((s, i) => {
     const slice = shots.slice(Math.max(0, i - window + 1), i + 1);

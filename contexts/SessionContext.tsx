@@ -46,8 +46,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveIdRaw] = useState<string | null>(null);
   const [selectedShot, setSelectedShot] = useState<Shot | null>(null);
-  const [hideOutliers, setHideOutliersRaw] = useState(() =>
-    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
+  const [hideOutliers, setHideOutliersRaw] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
   );
 
   function setHideOutliers(v: boolean) {
@@ -55,11 +55,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("hideOutliers", String(v));
   }
 
-  const activeSession = sessions.find(s => s.id === activeId) ?? null;
+  const activeSession = sessions.find((s) => s.id === activeId) ?? null;
 
   function addSession(filename: string, analysis: SessionAnalysis) {
     const id = crypto.randomUUID();
-    setSessions(prev => [...prev, { id, filename, analysis }]);
+    setSessions((prev) => [...prev, { id, filename, analysis }]);
     setActiveIdRaw(id);
     setSelectedShot(null);
   }
@@ -70,8 +70,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }
 
   function removeSession(id: string) {
-    setSessions(prev => {
-      const next = prev.filter(s => s.id !== id);
+    setSessions((prev) => {
+      const next = prev.filter((s) => s.id !== id);
       if (activeId === id) {
         setActiveIdRaw(next.length > 0 ? next[next.length - 1].id : null);
         setSelectedShot(null);
@@ -87,7 +87,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setActiveIdRaw(null);
       setSelectedShot(null);
     } else if (activeSession) {
-      setSessions(prev => prev.map(s => s.id === activeId ? { ...s, analysis: a } : s));
+      setSessions((prev) => prev.map((s) => (s.id === activeId ? { ...s, analysis: a } : s)));
     } else {
       const id = crypto.randomUUID();
       setSessions([{ id, filename: "", analysis: a }]);
@@ -97,26 +97,28 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   function setFilename(f: string) {
     if (activeId) {
-      setSessions(prev => prev.map(s => s.id === activeId ? { ...s, filename: f } : s));
+      setSessions((prev) => prev.map((s) => (s.id === activeId ? { ...s, filename: f } : s)));
     }
   }
 
   return (
-    <SessionContext.Provider value={{
-      sessions,
-      activeId,
-      analysis: activeSession?.analysis ?? null,
-      filename: activeSession?.filename ?? "",
-      selectedShot,
-      hideOutliers,
-      setHideOutliers,
-      addSession,
-      setActiveId,
-      removeSession,
-      setSelectedShot,
-      setAnalysis,
-      setFilename,
-    }}>
+    <SessionContext.Provider
+      value={{
+        sessions,
+        activeId,
+        analysis: activeSession?.analysis ?? null,
+        filename: activeSession?.filename ?? "",
+        selectedShot,
+        hideOutliers,
+        setHideOutliers,
+        addSession,
+        setActiveId,
+        removeSession,
+        setSelectedShot,
+        setAnalysis,
+        setFilename,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

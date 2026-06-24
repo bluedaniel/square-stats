@@ -23,11 +23,11 @@ export function NavBar({ right }: Props) {
   }
 
   const links = [
-    { href: "/",        label: "Dashboard",   short: "Dash" },
-    { href: "/shots",   label: "All Shots",   short: "Shots" },
-    { href: "/bag",     label: "Bag Gapping", short: "Bag" },
-    { href: "/compare", label: "Compare",     short: "Compare" },
-    { href: "/profile", label: "Settings",    short: "Settings" },
+    { href: "/", label: "Dashboard", short: "Dash" },
+    { href: "/shots", label: "All Shots", short: "Shots" },
+    { href: "/bag", label: "Bag Gapping", short: "Bag" },
+    { href: "/compare", label: "Compare", short: "Compare" },
+    { href: "/profile", label: "Settings", short: "Settings" },
   ];
 
   return (
@@ -52,8 +52,16 @@ export function NavBar({ right }: Props) {
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {analysis && analysis.outlierIndices.size > 0 && (
           <label className="flex items-center gap-1.5 cursor-pointer select-none">
-            <span className={["hidden sm:inline text-xs transition-colors", hideOutliers ? "text-foreground" : "text-muted-foreground"].join(" ")}>
-              Hide outliers{hideOutliers && <span className="ml-1 tabular-nums">({analysis.outlierIndices.size})</span>}
+            <span
+              className={[
+                "hidden sm:inline text-xs transition-colors",
+                hideOutliers ? "text-foreground" : "text-muted-foreground",
+              ].join(" ")}
+            >
+              Hide outliers
+              {hideOutliers && (
+                <span className="ml-1 tabular-nums">({analysis.outlierIndices.size})</span>
+              )}
             </span>
             <Switch checked={hideOutliers} onCheckedChange={setHideOutliers} />
           </label>

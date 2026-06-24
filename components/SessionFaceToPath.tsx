@@ -17,9 +17,9 @@ function mean(vals: number[]): number {
 export function SessionFaceToPath({ shots, club }: Props) {
   if (!shots.length) return null;
 
-  const avgLaunchDirection = mean(shots.map(s => s.launchDirection));
-  const avgFaceAngle       = mean(shots.map(s => s.faceAngle));
-  const avgClubPath        = mean(shots.map(s => s.clubPath));
+  const avgLaunchDirection = mean(shots.map((s) => s.launchDirection));
+  const avgFaceAngle = mean(shots.map((s) => s.faceAngle));
+  const avgClubPath = mean(shots.map((s) => s.clubPath));
 
   return (
     <Card>

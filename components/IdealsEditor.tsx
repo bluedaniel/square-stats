@@ -2,14 +2,25 @@
 
 import { useState } from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  CLUB_KEYS, CLUB_LABELS, STAT_KEYS, STAT_LABELS,
-  type IdealsConfig, type ClubKey, type StatKey, type IdealRange,
-  saveIdeals, resetIdeals,
+  CLUB_KEYS,
+  CLUB_LABELS,
+  STAT_KEYS,
+  STAT_LABELS,
+  type IdealsConfig,
+  type ClubKey,
+  type StatKey,
+  type IdealRange,
+  saveIdeals,
+  resetIdeals,
 } from "@/lib/ideals";
 
 interface Props {
@@ -33,17 +44,15 @@ function normaliseClubKey(club: string): ClubKey | null {
 export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
   const defaultTab: ClubKey = (currentClub ? normaliseClubKey(currentClub) : null) ?? "driver";
   const [club, setClub] = useState<ClubKey>(defaultTab);
-  const [draft, setDraft] = useState<IdealsConfig>(() =>
-    JSON.parse(JSON.stringify(initial))
-  );
+  const [draft, setDraft] = useState<IdealsConfig>(() => JSON.parse(JSON.stringify(initial)));
 
   function setRange(key: StatKey, field: keyof IdealRange, raw: string) {
     const val = parseFloat(raw);
-    setDraft(prev => ({
+    setDraft((prev) => ({
       ...prev,
       [club]: {
         ...prev[club],
-        [key]: { ...((prev[club]?.[key]) ?? { min: 0, max: 0 }), [field]: isNaN(val) ? 0 : val },
+        [key]: { ...(prev[club]?.[key] ?? { min: 0, max: 0 }), [field]: isNaN(val) ? 0 : val },
       },
     }));
   }
@@ -62,14 +71,19 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
   const clubData = draft[club] ?? {};
 
   return (
-    <Dialog open={open} onOpenChange={open => { if (!open) onClose(null); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) onClose(null);
+      }}
+    >
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Ideal Ranges</DialogTitle>
         </DialogHeader>
 
         <div className="flex gap-1 flex-wrap">
-          {CLUB_KEYS.map(k => (
+          {CLUB_KEYS.map((k) => (
             <Button
               key={k}
               onClick={() => setClub(k)}
@@ -83,21 +97,27 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
 
         <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-2 items-center text-sm">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Stat</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide text-center w-20">Min</span>
-          <span className="text-xs text-muted-foreground uppercase tracking-wide text-center w-20">Max</span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide text-center w-20">
+            Min
+          </span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide text-center w-20">
+            Max
+          </span>
 
-          {STAT_KEYS.map(key => {
+          {STAT_KEYS.map((key) => {
             const range = clubData[key];
             return (
               <>
-                <span key={`${key}-label`} className="text-sm">{STAT_LABELS[key]}</span>
+                <span key={`${key}-label`} className="text-sm">
+                  {STAT_LABELS[key]}
+                </span>
                 <Input
                   key={`${key}-min`}
                   type="number"
                   step="any"
                   value={range?.min ?? ""}
                   placeholder="—"
-                  onChange={e => setRange(key, "min", e.target.value)}
+                  onChange={(e) => setRange(key, "min", e.target.value)}
                   className="w-20 h-8 text-sm text-center px-2 tabular-nums"
                 />
                 <Input
@@ -106,7 +126,7 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
                   step="any"
                   value={range?.max ?? ""}
                   placeholder="—"
-                  onChange={e => setRange(key, "max", e.target.value)}
+                  onChange={(e) => setRange(key, "max", e.target.value)}
                   className="w-20 h-8 text-sm text-center px-2 tabular-nums"
                 />
               </>
@@ -115,8 +135,12 @@ export function IdealsEditor({ open, onClose, initial, currentClub }: Props) {
         </div>
 
         <DialogFooter className="gap-2">
-          <Button onClick={handleReset} variant="link" size="sm">Reset to defaults</Button>
-          <Button onClick={() => onClose(null)} variant="outline">Cancel</Button>
+          <Button onClick={handleReset} variant="link" size="sm">
+            Reset to defaults
+          </Button>
+          <Button onClick={() => onClose(null)} variant="outline">
+            Cancel
+          </Button>
           <Button onClick={handleSave}>Save</Button>
         </DialogFooter>
       </DialogContent>

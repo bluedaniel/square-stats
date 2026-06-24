@@ -46,13 +46,17 @@ export function StatsTable({ clubStats }: Props) {
   const sorted = [...clubStats].sort((a, b) => {
     const av = a[sortKey];
     const bv = b[sortKey];
-    if (typeof av === "string") return sortAsc ? av.localeCompare(bv as string) : (bv as string).localeCompare(av);
+    if (typeof av === "string")
+      return sortAsc ? av.localeCompare(bv as string) : (bv as string).localeCompare(av);
     return sortAsc ? (av as number) - (bv as number) : (bv as number) - (av as number);
   });
 
   function handleSort(key: SortKey) {
     if (key === sortKey) setSortAsc((v) => !v);
-    else { setSortKey(key); setSortAsc(true); }
+    else {
+      setSortKey(key);
+      setSortAsc(true);
+    }
   }
 
   return (

@@ -17,9 +17,9 @@ function mean(vals: number[]): number {
 export function SessionLoftDiagram({ shots, club }: Props) {
   if (!shots.length) return null;
 
-  const avgLaunchAngle = mean(shots.map(s => s.launchAngle));
-  const avgDynamicLoft = mean(shots.map(s => s.dynamicLoft));
-  const avgAttackAngle = mean(shots.map(s => s.attackAngle));
+  const avgLaunchAngle = mean(shots.map((s) => s.launchAngle));
+  const avgDynamicLoft = mean(shots.map((s) => s.dynamicLoft));
+  const avgAttackAngle = mean(shots.map((s) => s.attackAngle));
 
   return (
     <Card>

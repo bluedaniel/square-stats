@@ -12,9 +12,9 @@ export function CSVDropzone({ onFile }: Props) {
   const [dragging, setDragging] = useState(false);
 
   const readFiles = (files: FileList | File[]) => {
-    Array.from(files).forEach(file => {
+    Array.from(files).forEach((file) => {
       const reader = new FileReader();
-      reader.onload = e => onFile(e.target?.result as string, file.name);
+      reader.onload = (e) => onFile(e.target?.result as string, file.name);
       reader.readAsText(file);
     });
   };
@@ -30,9 +30,14 @@ export function CSVDropzone({ onFile }: Props) {
     <Card
       className={[
         "max-w-sm mx-auto border-2 border-dashed transition-colors cursor-pointer",
-        dragging ? "border-primary bg-primary/5" : "border-muted-foreground/30 hover:border-primary/60",
+        dragging
+          ? "border-primary bg-primary/5"
+          : "border-muted-foreground/30 hover:border-primary/60",
       ].join(" ")}
-      onDragOver={e => { e.preventDefault(); setDragging(true); }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragging(true);
+      }}
       onDragLeave={() => setDragging(false)}
       onDrop={onDrop}
       onClick={() => document.getElementById("csv-input")?.click()}
@@ -43,7 +48,9 @@ export function CSVDropzone({ onFile }: Props) {
         </div>
         <div>
           <p className="text-sm font-medium">Drop your CSV files here</p>
-          <p className="text-xs text-muted-foreground mt-1">Square launch monitor export · multiple files supported</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Square launch monitor export · multiple files supported
+          </p>
         </div>
       </div>
       <input
@@ -52,7 +59,9 @@ export function CSVDropzone({ onFile }: Props) {
         accept=".csv"
         multiple
         className="hidden"
-        onChange={e => { if (e.target.files?.length) readFiles(e.target.files); }}
+        onChange={(e) => {
+          if (e.target.files?.length) readFiles(e.target.files);
+        }}
       />
     </Card>
   );

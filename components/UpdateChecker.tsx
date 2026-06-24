@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const isTauri =
-  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
 export function UpdateChecker() {
   const [update, setUpdate] = useState<{

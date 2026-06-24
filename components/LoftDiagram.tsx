@@ -74,12 +74,7 @@ function getConfig(club: string): SideConfig {
   return SIDE_CONFIGS["driver"];
 }
 
-export function LoftDiagram({
-  launchAngle,
-  dynamicLoft,
-  attackAngle,
-  club,
-}: Props) {
+export function LoftDiagram({ launchAngle, dynamicLoft, attackAngle, club }: Props) {
   const cfg = getConfig(club);
   const LINE = 150;
   const LO = 50;
@@ -98,27 +93,17 @@ export function LoftDiagram({
   const aoaLabel = `${attackAngle > 0 ? "+" : ""}${attackAngle.toFixed(1)}°`;
 
   return (
-    <div aria-label={`Launch ${launchAngle.toFixed(1)}°, Loft ${dynamicLoft.toFixed(1)}°, AoA ${attackAngle.toFixed(1)}°`}>
+    <div
+      aria-label={`Launch ${launchAngle.toFixed(1)}°, Loft ${dynamicLoft.toFixed(1)}°, AoA ${attackAngle.toFixed(1)}°`}
+    >
       <svg viewBox="-200 -140 400 210" className="w-full">
         <defs>
           <filter id="drop-shadow-dl">
-            <feDropShadow
-              dx="0"
-              dy="2"
-              stdDeviation="3"
-              floodColor="black"
-              floodOpacity="0.5"
-            />
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="black" floodOpacity="0.5" />
           </filter>
         </defs>
 
-        <image
-          href={`/faces/${cfg.image}`}
-          x={imgX}
-          y={imgY}
-          width={imgW}
-          height={imgH}
-        />
+        <image href={`/faces/${cfg.image}`} x={imgX} y={imgY} width={imgW} height={imgH} />
 
         <line
           x1="-200"
@@ -188,15 +173,21 @@ export function LoftDiagram({
 
       <div className="grid grid-cols-3 text-center mt-2">
         <div>
-          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>Launch Angle</p>
+          <p className="text-xs font-bold" style={{ color: "#22c55e" }}>
+            Launch Angle
+          </p>
           <p className="text-sm font-bold">{launchAngle.toFixed(1)}°</p>
         </div>
         <div>
-          <p className="text-xs font-bold" style={{ color: "#eab308" }}>Dynamic Loft</p>
+          <p className="text-xs font-bold" style={{ color: "#eab308" }}>
+            Dynamic Loft
+          </p>
           <p className="text-sm font-bold">{dynamicLoft.toFixed(1)}°</p>
         </div>
         <div>
-          <p className="text-xs font-bold" style={{ color: "#f97316" }}>Angle of Attack</p>
+          <p className="text-xs font-bold" style={{ color: "#f97316" }}>
+            Angle of Attack
+          </p>
           <p className="text-sm font-bold">{aoaLabel}</p>
         </div>
       </div>
