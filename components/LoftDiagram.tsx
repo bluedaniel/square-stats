@@ -1,5 +1,7 @@
 "use client";
 
+import { resolveClubKey, type ClubKey } from "@/lib/clubKey";
+
 const DEG = Math.PI / 180;
 
 interface Props {
@@ -17,7 +19,7 @@ interface SideConfig {
   scale: number;
 }
 
-const SIDE_CONFIGS: Record<string, SideConfig> = {
+const SIDE_CONFIGS: Record<ClubKey, SideConfig> = {
   driver: {
     image: "Driver_Side_2.png",
     origW: 556,
@@ -62,20 +64,8 @@ const SIDE_CONFIGS: Record<string, SideConfig> = {
   },
 };
 
-function getConfig(club: string): SideConfig {
-  const c = club.toLowerCase().replace(/\s+/g, "");
-  if (c.includes("driver")) return SIDE_CONFIGS["driver"];
-  if (c.includes("3wood") || c === "3w") return SIDE_CONFIGS["3wood"];
-  if (c.includes("4iron") || c === "4i") return SIDE_CONFIGS["4iron"];
-  if (c.includes("7iron") || c === "7i") return SIDE_CONFIGS["7iron"];
-  if (c.includes("9iron") || c === "9i") return SIDE_CONFIGS["9iron"];
-  if (c.includes("pw") || c.includes("pitching")) return SIDE_CONFIGS["pw"];
-  if (c.includes("iron") || c.includes("wedge")) return SIDE_CONFIGS["7iron"];
-  return SIDE_CONFIGS["driver"];
-}
-
 export function LoftDiagram({ launchAngle, dynamicLoft, attackAngle, club }: Props) {
-  const cfg = getConfig(club);
+  const cfg = SIDE_CONFIGS[resolveClubKey(club)];
   const LINE = 150;
   const LO = 50;
 

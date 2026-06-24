@@ -9,6 +9,8 @@ interface Props {
   club: string;
 }
 
+import { resolveClubKey, type ClubKey } from "@/lib/clubKey";
+
 interface TopConfig {
   image: string;
   imgX: number;
@@ -16,7 +18,7 @@ interface TopConfig {
 
 // imgX: left edge of 200×200 display box in SVG coords.
 // Calibrated so the face left edge is ~50 SVG units left of impact (0,-20).
-const TOP_CONFIGS: Record<string, TopConfig> = {
+const TOP_CONFIGS: Record<ClubKey, TopConfig> = {
   driver: { image: "Driver_Top.png", imgX: -51 },
   "3wood": { image: "3Wood_Top.png", imgX: -51 },
   "4iron": { image: "4Iron_Top.png", imgX: -61 },
@@ -25,25 +27,13 @@ const TOP_CONFIGS: Record<string, TopConfig> = {
   pw: { image: "PitchingWedge_Top.png", imgX: -56 },
 };
 
-function getConfig(club: string): TopConfig {
-  const c = club.toLowerCase().replace(/\s+/g, "");
-  if (c.includes("driver")) return TOP_CONFIGS["driver"];
-  if (c.includes("3wood") || c === "3w") return TOP_CONFIGS["3wood"];
-  if (c.includes("4iron") || c === "4i") return TOP_CONFIGS["4iron"];
-  if (c.includes("7iron") || c === "7i") return TOP_CONFIGS["7iron"];
-  if (c.includes("9iron") || c === "9i") return TOP_CONFIGS["9iron"];
-  if (c.includes("pw") || c.includes("pitching")) return TOP_CONFIGS["pw"];
-  if (c.includes("iron") || c.includes("wedge")) return TOP_CONFIGS["7iron"];
-  return TOP_CONFIGS["driver"];
-}
-
 function fmtDir(n: number): string {
   if (n === 0) return "0°";
   return `${n > 0 ? "R" : "L"}${Math.abs(n).toFixed(1)}°`;
 }
 
 export function FaceToPath({ launchDirection, faceAngle, clubPath, club }: Props) {
-  const cfg = getConfig(club);
+  const cfg = TOP_CONFIGS[resolveClubKey(club)];
   const LINE = 150;
   const REF_Y = -20; // y of reference line / impact point
   const ballR = 25;
