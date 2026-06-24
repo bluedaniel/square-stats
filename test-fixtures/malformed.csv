@@ -1,0 +1,5 @@
+This is not a golf CSV file at all.
+It has no headers, no shot data, nothing useful.
+Just some random text that should cause the parser to throw.
+foo,bar,baz
+1,2,3

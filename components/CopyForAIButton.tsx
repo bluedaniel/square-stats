@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   getText: () => string;
@@ -9,12 +9,9 @@ interface Props {
 }
 
 export function CopyForAIButton({ getText, className }: Props) {
-  const [copied, setCopied] = useState(false);
-
   function handleClick() {
     navigator.clipboard.writeText(getText()).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      toast.success("Copied to clipboard");
     });
   }
 
@@ -24,8 +21,8 @@ export function CopyForAIButton({ getText, className }: Props) {
       className={className ?? "text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1 transition-colors"}
     >
       <span className="inline-flex items-center gap-1.5">
-        {copied ? <Check size={12} /> : <Copy size={12} />}
-        {copied ? "Copied!" : "Copy for AI"}
+        <Copy size={12} />
+        Copy for AI
       </span>
     </button>
   );

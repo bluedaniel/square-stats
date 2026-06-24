@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "@/contexts/SessionContext";
 import { TauriInit } from "@/components/TauriInit";
 import { UpdateChecker } from "@/components/UpdateChecker";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <TauriInit />
           <UpdateChecker />
           {children}
+          <Toaster position="top-center" />
         </SessionProvider>
       </body>
     </html>

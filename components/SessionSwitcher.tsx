@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { useSession } from "@/contexts/SessionContext";
 import { useLoadSession } from "@/hooks/useLoadSession";
 import { LayoutGrid, ChevronDown, X, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export function SessionSwitcher() {
   const { sessions, activeId, setActiveId, removeSession } = useSession();
@@ -28,7 +29,7 @@ export function SessionSwitcher() {
       const reader = new FileReader();
       reader.onload = e => {
         try { loadFile(e.target?.result as string, file.name); }
-        catch { /* ignore bad files */ }
+        catch (err) { toast.error(err instanceof Error ? err.message : "Could not read file", { description: file.name }); }
       };
       reader.readAsText(file);
     });
