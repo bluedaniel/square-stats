@@ -4,8 +4,6 @@ A local desktop app for analysing Square launch monitor sessions. Drop in one or
 
 **[Download the latest release](https://github.com/bluedaniel/square-stats/releases/)** — macOS and Windows.
 
-> **macOS:** right-click the app → Open on first launch to bypass Gatekeeper (the app is unsigned).
-
 ## Screenshots
 
 ![Dashboard](screenshots/dashboard.jpeg)

@@ -64,7 +64,6 @@ jobs:
 
             ---
             **Install:** download `Square.Stats_${{ github.ref_name }}_aarch64.dmg` (Apple Silicon) or `Square.Stats_${{ github.ref_name }}_x64.dmg` (Intel).
-            First launch: right-click the app → Open (once, to bypass Gatekeeper).
           releaseDraft: false
           prerelease: false
 
