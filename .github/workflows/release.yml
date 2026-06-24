@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - uses: dtolnay/rust-toolchain@stable
@@ -31,14 +31,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Test signing
-        run: |
-          echo "Key length: ${#TAURI_SIGNING_PRIVATE_KEY}"
-          echo "test" > /tmp/test-sign.txt
-          npx tauri signer sign /tmp/test-sign.txt
-          echo "Signing exit code: $?"
-          ls /tmp/test-sign.txt.sig && echo "Signature file created" || echo "Signature file NOT created"
 
       - name: Build and publish release
         uses: tauri-apps/tauri-action@v0
@@ -71,7 +63,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - uses: dtolnay/rust-toolchain@stable
