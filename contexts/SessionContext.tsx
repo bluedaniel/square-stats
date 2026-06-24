@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import type { SessionAnalysis, Shot } from "@/types/shot";
 
 export interface Session {
@@ -15,6 +15,8 @@ interface SessionContextValue {
   analysis: SessionAnalysis | null;
   filename: string;
   selectedShot: Shot | null;
+  hideOutliers: boolean;
+  setHideOutliers: (v: boolean) => void;
   addSession: (filename: string, analysis: SessionAnalysis) => void;
   setActiveId: (id: string) => void;
   removeSession: (id: string) => void;
@@ -30,6 +32,8 @@ const SessionContext = createContext<SessionContextValue>({
   analysis: null,
   filename: "",
   selectedShot: null,
+  hideOutliers: false,
+  setHideOutliers: () => {},
   addSession: () => {},
   setActiveId: () => {},
   removeSession: () => {},
@@ -42,6 +46,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveIdRaw] = useState<string | null>(null);
   const [selectedShot, setSelectedShot] = useState<Shot | null>(null);
+  const [hideOutliers, setHideOutliersRaw] = useState(() =>
+    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
+  );
+
+  function setHideOutliers(v: boolean) {
+    setHideOutliersRaw(v);
+    localStorage.setItem("hideOutliers", String(v));
+  }
 
   const activeSession = sessions.find(s => s.id === activeId) ?? null;
 
@@ -96,6 +108,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       analysis: activeSession?.analysis ?? null,
       filename: activeSession?.filename ?? "",
       selectedShot,
+      hideOutliers,
+      setHideOutliers,
       addSession,
       setActiveId,
       removeSession,

@@ -12,6 +12,7 @@ import { FairwayView } from "@/components/FairwayView";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/contexts/SessionContext";
 import { loadProfile, findBagClub, profileStatStatus, csvToLabel, type BagClub } from "@/lib/profile";
+import { recomputeClubStats } from "@/utils/analyze";
 import { IdealsViewModal } from "@/components/IdealsViewModal";
 import { Button } from "@/components/ui/button";
 import { HighlightToggle, HIGHLIGHT_CYCLE, type HighlightMode } from "@/components/HighlightToggle";
@@ -184,7 +185,7 @@ function buildGroups(shot: Shot, bagClub: BagClub | undefined) {
 }
 
 export default function ShotPage() {
-  const { selectedShot, setSelectedShot, analysis } = useSession();
+  const { selectedShot, setSelectedShot, analysis, hideOutliers } = useSession();
   const router = useRouter();
   const [highlightMode, setHighlightMode] = useState<HighlightMode>(() =>
     ((typeof window !== "undefined" && localStorage.getItem("highlightMode")) as HighlightMode) ?? "off"
@@ -343,11 +344,14 @@ export default function ShotPage() {
 
           <div>
             {(() => {
-              const clubStats = analysis.clubStats.find(c => c.club === shot.club);
+              const effectiveShots = hideOutliers
+                ? analysis.shots.filter((_, i) => !analysis.outlierIndices.has(i))
+                : analysis.shots;
+              const clubStats = recomputeClubStats(effectiveShots).find(c => c.club === shot.club);
               if (!clubStats) return null;
               return (
                 <FairwayView
-                  analysis={analysis}
+                  shots={effectiveShots}
                   clubs={[clubStats]}
                   highlightShot={shot}
                 />

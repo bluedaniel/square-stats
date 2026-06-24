@@ -1,6 +1,6 @@
 "use client";
 
-import type { SessionAnalysis, ClubStats, Shot } from "@/types/shot";
+import type { ClubStats, Shot } from "@/types/shot";
 
 const CLUB_COLORS = [
   "#22c55e", "#f97316", "#ef4444", "#3b82f6", "#8b5cf6",
@@ -16,22 +16,22 @@ const PX_PER_YD = FULL_SVG_H / 350;
 const FAIRWAY_HALF_PX = 75; // fairway in the photo is ~150px wide
 
 interface Props {
-  analysis: SessionAnalysis;
+  shots: Shot[];
   clubs: ClubStats[];
   highlightShot?: Shot;
 }
 
-export function FairwayView({ analysis, clubs, highlightShot }: Props) {
+export function FairwayView({ shots, clubs, highlightShot }: Props) {
   // Derive max carry from the clubs being displayed, rounded up to next 50yd + 10% buffer
   const allCarries = clubs.flatMap(c =>
-    (analysis.shots.filter(s => s.club === c.club && s.carry > 0)).map(s => s.carry)
+    shots.filter(s => s.club === c.club && s.carry > 0).map(s => s.carry)
   );
   const rawMax = allCarries.length ? Math.max(...allCarries) : 350;
   const CARRY_MAX = Math.ceil((rawMax * 1.1) / 50) * 50;
   const SVG_H = Math.round(CARRY_MAX * PX_PER_YD);
 
   // Scale offline axis to p95 absolute value so outliers don't compress the band.
-  const allOfflines = analysis.shots.map(s => Math.abs(s.offline)).sort((a, b) => a - b);
+  const allOfflines = shots.map(s => Math.abs(s.offline)).sort((a, b) => a - b);
   const p95idx = Math.floor(allOfflines.length * 0.95);
   const offlineMax = Math.max(allOfflines[p95idx] ?? 0, 10) * 1.15;
 
@@ -43,7 +43,7 @@ export function FairwayView({ analysis, clubs, highlightShot }: Props) {
   }
 
   const shotsByClub: Record<string, Shot[]> = {};
-  for (const s of analysis.shots) {
+  for (const s of shots) {
     (shotsByClub[s.club] ??= []).push(s);
   }
 

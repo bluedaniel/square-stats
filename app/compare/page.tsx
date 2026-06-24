@@ -13,6 +13,7 @@ import { GitCompareArrows } from "lucide-react";
 import { CLUB_COLORS } from "@/components/FairwayView";
 import { useSession } from "@/contexts/SessionContext";
 import type { Session } from "@/contexts/SessionContext";
+import { recomputeClubStats } from "@/utils/analyze";
 
 const SESSION_COLORS = [
   "#3b82f6", "#22c55e", "#f97316", "#ef4444",
@@ -43,7 +44,16 @@ const OVERVIEW_METRICS = [
 type MetricKey = typeof OVERVIEW_METRICS[number]["key"];
 
 export default function ComparePage() {
-  const { sessions } = useSession();
+  const { sessions, hideOutliers } = useSession();
+
+  const effectiveSessions = useMemo(() =>
+    hideOutliers
+      ? sessions.map(s => {
+          const shots = s.analysis.shots.filter((_, i) => !s.analysis.outlierIndices.has(i));
+          return { ...s, analysis: { ...s.analysis, shots, clubStats: recomputeClubStats(shots) } };
+        })
+      : sessions,
+  [sessions, hideOutliers]);
 
   if (sessions.length === 0) {
     return (
@@ -65,14 +75,14 @@ export default function ComparePage() {
           </p>
         </div>
 
-        {sessions.length < 2 ? (
+        {effectiveSessions.length < 2 ? (
           <EmptyState
             icon={GitCompareArrows}
             title="Not enough sessions"
             description="Load at least 2 CSV sessions to compare them side by side."
           />
         ) : (
-          <CompareContent sessions={sessions} />
+          <CompareContent sessions={effectiveSessions} />
         )}
 
       </main>

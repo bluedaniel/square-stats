@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { NavBar } from "@/components/NavBar";
 import { StatsCards } from "@/components/StatsCards";
 import { DispersionChart } from "@/components/DispersionChart";
@@ -14,6 +14,7 @@ import { StatsTable } from "@/components/StatsTable";
 import { recomputeClubStats } from "@/utils/analyze";
 import { SessionMeta } from "@/components/SessionMeta";
 import { ClubSelector } from "@/components/ClubSelector";
+import { useSession } from "@/contexts/SessionContext";
 import type { SessionAnalysis } from "@/types/shot";
 
 interface Props {
@@ -22,15 +23,9 @@ interface Props {
 }
 
 export function Dashboard({ analysis, filename }: Props) {
+  const { hideOutliers } = useSession();
   const clubs = ["All", ...new Set(analysis.shots.map((s) => s.club))];
   const [selectedClub, setSelectedClub] = useState("All");
-  const [hideOutliers, setHideOutliers] = useState(() =>
-    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
-  );
-
-  useEffect(() => {
-    localStorage.setItem("hideOutliers", String(hideOutliers));
-  }, [hideOutliers]);
 
   const visibleShots = useMemo(
     () =>
@@ -64,8 +59,6 @@ export function Dashboard({ analysis, filename }: Props) {
           meta={analysis.meta}
           filename={filename}
           outlierCount={outlierCount}
-          hideOutliers={hideOutliers}
-          onToggleOutliers={setHideOutliers}
         />
       </div>
 

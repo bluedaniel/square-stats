@@ -145,13 +145,10 @@ function loadVisibility(): VisibilityState {
 }
 
 export default function ShotsPage() {
-  const { analysis, filename, setSelectedShot } = useSession();
+  const { analysis, filename, setSelectedShot, hideOutliers } = useSession();
   const router = useRouter();
 
   const [selectedClub, setSelectedClub] = useState("All");
-  const [hideOutliers, setHideOutliers] = useState(() =>
-    typeof window !== "undefined" && localStorage.getItem("hideOutliers") === "true"
-  );
   const [highlightMode, setHighlightMode] = useState<HighlightMode>(() =>
     (typeof window !== "undefined" ? localStorage.getItem("highlightMode") as HighlightMode : null) ?? "off"
   );
@@ -164,10 +161,6 @@ export default function ShotsPage() {
   const [profile] = useState(() => loadProfile());
   const [llmOpen, setLlmOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem("hideOutliers", String(hideOutliers));
-  }, [hideOutliers]);
 
   useEffect(() => {
     localStorage.setItem("shotsColumnVisibility", JSON.stringify(columnVisibility));
@@ -271,8 +264,6 @@ export default function ShotsPage() {
           filename={filename}
           suffix={`${rowCount} shot${rowCount !== 1 ? "s" : ""}`}
           outlierCount={outlierCount}
-          hideOutliers={hideOutliers}
-          onToggleOutliers={setHideOutliers}
         />
       </div>
 

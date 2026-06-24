@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SessionSwitcher } from "@/components/SessionSwitcher";
+import { Switch } from "@/components/ui/switch";
+import { useSession } from "@/contexts/SessionContext";
 
 interface Props {
   right?: React.ReactNode;
@@ -11,6 +13,7 @@ interface Props {
 
 export function NavBar({ right }: Props) {
   const pathname = usePathname();
+  const { analysis, hideOutliers, setHideOutliers } = useSession();
 
   function isActive(href: string) {
     if (href === "/shots") return pathname === "/shots" || pathname === "/shot";
@@ -46,6 +49,24 @@ export function NavBar({ right }: Props) {
         ))}
       </div>
       <div className="flex items-center gap-2">
+        {analysis && analysis.outlierIndices.size > 0 && (
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <span
+              className={[
+                "text-xs transition-colors",
+                hideOutliers ? "text-foreground" : "text-muted-foreground",
+              ].join(" ")}
+            >
+              Hide outliers
+              {hideOutliers && (
+                <span className="ml-1 tabular-nums">
+                  ({analysis.outlierIndices.size})
+                </span>
+              )}
+            </span>
+            <Switch checked={hideOutliers} onCheckedChange={setHideOutliers} />
+          </label>
+        )}
         <SessionSwitcher />
         {right}
         <ThemeToggle />

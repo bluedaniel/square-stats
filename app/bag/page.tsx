@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useSession } from "@/contexts/SessionContext";
+import { recomputeClubStats } from "@/utils/analyze";
 import { NavBar } from "@/components/NavBar";
-import type { SessionAnalysis, ClubStats } from "@/types/shot";
+import type { ClubStats, Shot } from "@/types/shot";
 import { FairwayView, CLUB_COLORS } from "@/components/FairwayView";
 import { CopyForAIButton } from "@/components/CopyForAIButton";
 import { NoSessionState } from "@/components/EmptyState";
@@ -42,12 +43,18 @@ function buildAIText(clubs: ClubStats[]): string {
 }
 
 export default function BagPage() {
-  const { analysis } = useSession();
+  const { analysis, hideOutliers } = useSession();
   const [view, setView] = useState<View>("map");
 
-  const clubs = analysis
-    ? [...analysis.clubStats].filter(c => c.avgCarry > 0 && c.count >= 2).sort((a, b) => b.avgCarry - a.avgCarry)
+  const effectiveShots = analysis
+    ? hideOutliers
+      ? analysis.shots.filter((_, i) => !analysis.outlierIndices.has(i))
+      : analysis.shots
     : [];
+
+  const clubs = (analysis ? recomputeClubStats(effectiveShots) : [])
+    .filter(c => c.avgCarry > 0 && c.count >= 2)
+    .sort((a, b) => b.avgCarry - a.avgCarry);
 
   if (!analysis) {
     return (
@@ -92,17 +99,13 @@ export default function BagPage() {
             </div>
           </div>
         </div>
-        <GappingLayout analysis={analysis} view={view} />
+        <GappingLayout shots={effectiveShots} clubs={clubs} view={view} />
       </main>
     </div>
   );
 }
 
-function GappingLayout({ analysis, view }: { analysis: SessionAnalysis; view: View }) {
-  const clubs = [...analysis.clubStats]
-    .filter(c => c.avgCarry > 0 && c.count >= 2)
-    .sort((a, b) => b.avgCarry - a.avgCarry);
-
+function GappingLayout({ shots, clubs, view }: { shots: Shot[]; clubs: ClubStats[]; view: View }) {
   if (!clubs.length) return (
     <p className="text-sm text-muted-foreground text-center py-8">
       Not enough data — need at least 2 shots per club.
@@ -111,12 +114,12 @@ function GappingLayout({ analysis, view }: { analysis: SessionAnalysis; view: Vi
 
   if (view === "table") return <TableView clubs={clubs} />;
   if (view === "ladder") return <LadderView clubs={clubs} />;
-  return <MapView analysis={analysis} clubs={clubs} />;
+  return <MapView shots={shots} clubs={clubs} />;
 }
 
 // ── Map view ──────────────────────────────────────────────────────────────────
 
-function MapView({ analysis, clubs }: { analysis: SessionAnalysis; clubs: ClubStats[] }) {
+function MapView({ shots, clubs }: { shots: Shot[]; clubs: ClubStats[] }) {
   const maxCarry = clubs[0].avgCarry;
 
   return (
@@ -166,7 +169,7 @@ function MapView({ analysis, clubs }: { analysis: SessionAnalysis; clubs: ClubSt
         </div>
       </div>
       <div className="w-full lg:w-96 lg:shrink-0">
-        <FairwayView analysis={analysis} clubs={clubs} />
+        <FairwayView shots={shots} clubs={clubs} />
       </div>
     </div>
   );
