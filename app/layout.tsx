@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Square Stats",
-  description: "Golf shot analysis for Square Omni",
+  description: "Golf shot analysis for Square launch monitors",
 };
 
 export default function RootLayout({

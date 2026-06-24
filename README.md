@@ -1,6 +1,6 @@
 # Square Stats
 
-A local desktop app for analysing Square Omni launch monitor sessions. Drop in one or more CSV exports and get shot dispersion, distance histograms, spin charts, trend lines, a per-shot breakdown with club face diagrams, bag gapping, and cross-session comparison — all offline, no account required.
+A local desktop app for analysing Square launch monitor sessions. Drop in one or more CSV exports and get shot dispersion, distance histograms, spin charts, trend lines, a per-shot breakdown with club face diagrams, bag gapping, and cross-session comparison — all offline, no account required.
 
 **[Download the latest release](https://github.com/bluedaniel/square-stats/releases/)** — macOS and Windows.
 
@@ -48,7 +48,7 @@ Requires [Rust](https://rustup.rs) installed.
 
 ## CSV format
 
-Accepts Square Omni exports. Drop the `.csv` file onto the landing screen or use the Load button. The app reads session metadata (date, location) from the header rows and skips `Average`/`Deviation` summary rows automatically.
+Accepts Square launch monitor exports. Drop the `.csv` file onto the landing screen or use the Load button. The app reads session metadata (date, location) from the header rows and skips `Average`/`Deviation` summary rows automatically.
 
 ## Stack
 

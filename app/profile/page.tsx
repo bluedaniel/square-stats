@@ -234,7 +234,7 @@ function ProfilePageInner() {
         <div className="rounded-xl border border-border p-5 space-y-3">
           <h2 className="text-sm font-semibold">About Square Stats</h2>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Square Stats is a free, offline desktop app for analysing Square Omni launch monitor data. Drop in a CSV export and get instant shot analysis — no account, no cloud, no cost.
+            Square Stats is a free, offline desktop app for analysing Square launch monitor data. Drop in a CSV export and get instant shot analysis — no account, no cloud, no cost.
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
             Built for golfers who want to understand their data without paying for a subscription.

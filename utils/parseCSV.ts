@@ -19,7 +19,7 @@ function parseNum(val: string): number {
   return isNaN(n) ? 0 : n;
 }
 
-export function parseSquareOmniCSV(csvText: string): {
+export function parseSquareCSV(csvText: string): {
   meta: SessionMeta;
   shots: Shot[];
 } {

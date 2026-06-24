@@ -43,7 +43,7 @@ export function CSVDropzone({ onFile }: Props) {
         </div>
         <div>
           <p className="text-sm font-medium">Drop your CSV files here</p>
-          <p className="text-xs text-muted-foreground mt-1">Square Omni export · multiple files supported</p>
+          <p className="text-xs text-muted-foreground mt-1">Square launch monitor export · multiple files supported</p>
         </div>
       </div>
       <input
