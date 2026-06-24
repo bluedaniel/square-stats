@@ -28,7 +28,9 @@ export function UpdateChecker() {
             },
           });
         }
-      } catch {}
+      } catch (e) {
+        console.error("[updater]", e);
+      }
     })();
   }, []);
 
