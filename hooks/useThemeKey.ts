@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 
 export function useThemeKey() {
-  const [isDark, setIsDark] = useState(
-    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
-  );
+  const [isDark, setIsDark] = useState(false);
   useEffect(() => {
+    startTransition(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
